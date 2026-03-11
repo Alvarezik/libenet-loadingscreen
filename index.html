@@ -36,11 +36,9 @@ body{
   position:relative;
 }
 
-/* ═══ BACKGROUND LAYERS ═══ */
 .bg-hex{
   position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='92'%3E%3Cpolygon points='40,2 78,22 78,70 40,90 2,70 2,22' fill='none' stroke='rgba(0,180,220,0.055)' stroke-width='1'/%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='92'%3E%3Cpolygon points='40,2 78,22 78,70 40,90 2,70 2,22' fill='none' stroke='rgba(0,180,220,0.055)' stroke-width='1'/%3E%3C/svg%3E");
   background-size:80px 92px;
   animation:hexShift 30s linear infinite;
 }
@@ -48,17 +46,13 @@ body{
 
 .bg-vignette{
   position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(2,6,12,.85) 100%);
+  background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 30%,rgba(2,6,12,.9) 100%);
 }
-
 .bg-lines{
   position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:repeating-linear-gradient(
-    0deg,transparent,transparent 3px,rgba(0,180,220,.018) 3px,rgba(0,180,220,.018) 4px
-  );
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,180,220,.015) 3px,rgba(0,180,220,.015) 4px);
 }
 
-/* Accent corner glows */
 .glow{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
 .glow.tl{width:500px;height:500px;background:rgba(0,120,200,.18);top:-200px;left:-150px;animation:gp 9s ease-in-out infinite}
 .glow.br{width:600px;height:600px;background:rgba(0,60,150,.14);bottom:-250px;right:-200px;animation:gp 12s ease-in-out infinite reverse}
@@ -73,66 +67,37 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
   display:grid;
   grid-template-rows:auto 1fr auto auto;
   height:100vh;
-  padding:22px 30px 20px;
+  padding:20px 28px 18px;
   gap:0;
 }
 
 /* ═══ TOP BAR ═══ */
 .topbar{
   display:flex;align-items:center;justify-content:space-between;
-  padding-bottom:18px;
+  padding-bottom:16px;
   border-bottom:1px solid var(--br);
   position:relative;
   animation:slideDown .7s cubic-bezier(.2,.8,.4,1) both;
 }
-@keyframes slideDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.topbar::after{content:'';position:absolute;bottom:-1px;left:0;width:120px;height:1px;background:linear-gradient(90deg,var(--c),transparent)}
 
-.topbar::after{
-  content:'';position:absolute;bottom:-1px;left:0;width:120px;height:1px;
-  background:linear-gradient(90deg,var(--c),transparent);
-}
+.brand{display:flex;align-items:center;gap:16px}
+.logo-wrap{position:relative;padding:3px}
+.logo-wrap::before{content:'';position:absolute;inset:0;border-radius:6px;background:linear-gradient(135deg,var(--c),transparent 60%);opacity:.35}
+.logo-img{height:42px;width:auto;display:block;position:relative;z-index:1;filter:drop-shadow(0 0 10px var(--c-glow));animation:logoB 4s ease-in-out infinite}
+@keyframes logoB{0%,100%{filter:drop-shadow(0 0 8px rgba(0,212,255,.4))}50%{filter:drop-shadow(0 0 22px rgba(0,212,255,.9))}}
 
-.brand{display:flex;align-items:center;gap:18px}
-.logo-wrap{
-  position:relative;
-  padding:3px;
-}
-.logo-wrap::before{
-  content:'';position:absolute;inset:0;border-radius:6px;
-  background:linear-gradient(135deg,var(--c),transparent 60%);
-  opacity:.4;
-}
-.logo-img{
-  height:44px;width:auto;display:block;position:relative;z-index:1;
-  filter:drop-shadow(0 0 10px var(--c-glow));
-  animation:logoBreath 4s ease-in-out infinite;
-}
-@keyframes logoBreath{
-  0%,100%{filter:drop-shadow(0 0 8px rgba(0,212,255,.4))}
-  50%{filter:drop-shadow(0 0 22px rgba(0,212,255,.9))}
-}
+.brand-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:8px;background:linear-gradient(90deg,#fff 60%,var(--c));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--t3);margin-top:2px;text-transform:uppercase}
 
-.brand-text{}
-.brand-name{
-  font-family:'Syne',sans-serif;
-  font-size:22px;font-weight:800;
-  letter-spacing:8px;color:#fff;
-  text-transform:uppercase;
-  background:linear-gradient(90deg,#fff 60%,var(--c));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.brand-sub{
-  font-family:'Space Mono',monospace;
-  font-size:9px;letter-spacing:4px;color:var(--t3);
-  margin-top:2px;text-transform:uppercase;
-}
+.topright{display:flex;align-items:center;gap:14px}
+.server-ping{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3);display:flex;align-items:center;gap:6px}
+.ping-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
 
-/* Dev badge */
 .dev-badge{
-  display:flex;align-items:center;gap:10px;
-  padding:7px 16px 7px 10px;
-  border:1px solid rgba(255,170,0,.25);
-  border-radius:3px;
+  display:flex;align-items:center;gap:9px;padding:6px 15px 6px 10px;
+  border:1px solid rgba(255,170,0,.25);border-radius:3px;
   background:rgba(255,170,0,.03);
   clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%,0% 8px);
 }
@@ -140,91 +105,44 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
 .dev-badge-text{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--amber)}
 
-/* Top right cluster */
-.topright{display:flex;align-items:center;gap:14px}
-.server-ping{
-  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3);
-  display:flex;align-items:center;gap:6px;
-}
-.ping-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
-
-/* ═══ MAIN CONTENT ═══ */
+/* ═══ CONTENT ═══ */
 .content{
   display:grid;
-  grid-template-columns:1fr 320px;
-  gap:16px;
-  padding:16px 0;
+  grid-template-columns:1fr 310px;
+  gap:14px;
+  padding:14px 0;
   animation:fadeIn .9s ease .15s both;
 }
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* ── LEFT COLUMN ── */
-.left-col{display:flex;flex-direction:column;gap:14px}
+.left-col{display:flex;flex-direction:column;gap:12px}
 
 /* Tip card */
 .tip-card{
   flex:1;
   background:linear-gradient(135deg,rgba(0,212,255,.04) 0%,rgba(0,30,60,.6) 100%);
-  border:1px solid var(--br);
-  border-radius:4px;
-  padding:22px 26px;
-  position:relative;overflow:hidden;
+  border:1px solid var(--br);border-radius:4px;
+  padding:20px 24px;position:relative;overflow:hidden;
 }
-.tip-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,var(--c),rgba(0,212,255,.2),transparent);
-}
-.tip-card::after{
-  content:'';position:absolute;top:0;left:0;width:3px;height:100%;
-  background:linear-gradient(180deg,var(--c),transparent);
-  opacity:.6;
-}
+.tip-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--c),rgba(0,212,255,.2),transparent)}
+.tip-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--c),transparent);opacity:.6}
 
-.sec-label{
-  font-family:'Space Mono',monospace;
-  font-size:8.5px;letter-spacing:4px;color:var(--t3);
-  text-transform:uppercase;margin-bottom:14px;
-  display:flex;align-items:center;gap:8px;
-}
+.sec-label{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:4px;color:var(--t3);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .sec-label::before{content:'';width:16px;height:1px;background:var(--c);opacity:.5}
 
-.tip-eyebrow{
-  font-family:'Space Mono',monospace;
-  font-size:9px;letter-spacing:3px;color:var(--c);
-  margin-bottom:8px;transition:opacity .35s;
-}
-.tip-heading{
-  font-family:'Syne',sans-serif;
-  font-size:18px;font-weight:700;color:#fff;
-  margin-bottom:10px;transition:opacity .35s;
-  letter-spacing:1px;
-}
-.tip-body{
-  font-size:13.5px;font-weight:300;line-height:1.7;color:var(--t2);
-  transition:opacity .35s;
-}
+.tip-eyebrow{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--c);margin-bottom:7px;transition:opacity .35s}
+.tip-heading{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:9px;transition:opacity .35s;letter-spacing:.5px}
+.tip-body{font-size:13px;font-weight:300;line-height:1.7;color:var(--t2);transition:opacity .35s}
 
-/* Server info strip */
+/* Server strip */
 .server-strip{
-  background:rgba(0,15,30,.7);
-  border:1px solid var(--br);
-  border-radius:4px;
-  padding:14px 20px;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:0;
+  background:rgba(0,15,30,.7);border:1px solid var(--br);border-radius:4px;
+  padding:12px 18px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
   position:relative;overflow:hidden;
 }
-.server-strip::before{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--c),transparent);
-  opacity:.2;
-}
-.sinfo{
-  display:flex;flex-direction:column;gap:4px;
-  padding:0 18px;
-  border-right:1px solid var(--br);
-}
+.server-strip::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.2}
+.sinfo{display:flex;flex-direction:column;gap:4px;padding:0 16px;border-right:1px solid var(--br)}
 .sinfo:first-child{padding-left:0}
 .sinfo:last-child{border-right:none}
 .sinfo-key{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--t3);text-transform:uppercase}
@@ -232,167 +150,79 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
 .sinfo-val.c{color:var(--c);text-shadow:0 0 12px var(--c-glow)}
 .sinfo-val.g{color:var(--green);text-shadow:0 0 8px rgba(0,255,170,.4)}
 .sinfo-val.a{color:var(--amber)}
-.sinfo-val.sm{font-size:11px;font-family:'Space Mono',monospace;letter-spacing:0}
+.sinfo-val.sm{font-size:11px;font-family:'Space Mono',monospace;letter-spacing:0;word-break:break-all}
 
-/* ── RIGHT COLUMN ── */
-.right-col{display:flex;flex-direction:column;gap:14px}
-
-/* Player card */
+/* ═══ PLAYER CARD ═══ */
 .player-card{
-  background:linear-gradient(160deg,rgba(0,212,255,.06) 0%,rgba(0,15,35,.8) 100%);
-  border:1px solid var(--br);
-  border-radius:4px;
-  padding:20px;
-  position:relative;overflow:hidden;
-  flex:1;
+  background:linear-gradient(160deg,rgba(0,212,255,.06) 0%,rgba(0,15,35,.85) 100%);
+  border:1px solid var(--br);border-radius:4px;
+  padding:18px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
 }
-.player-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,var(--c),rgba(0,212,255,.1),transparent);
-}
+.player-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--c),rgba(0,212,255,.1),transparent)}
+.player-card::after{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='92'%3E%3Cpolygon points='40,2 78,22 78,70 40,90 2,70 2,22' fill='none' stroke='rgba(0,180,220,0.07)' stroke-width='1'/%3E%3C/svg%3E") center/80px 92px;pointer-events:none}
 
-/* Decorative hex bg */
-.player-card::after{
-  content:'';position:absolute;right:-40px;top:-40px;
-  width:160px;height:160px;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='92'%3E%3Cpolygon points='40,2 78,22 78,70 40,90 2,70 2,22' fill='none' stroke='rgba(0,180,220,0.07)' stroke-width='1'/%3E%3C/svg%3E") center/80px 92px;
-  pointer-events:none;
-}
+.player-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--br)}
+.avatar{width:50px;height:50px;border-radius:4px;background:linear-gradient(135deg,var(--bg2),#0a2030);border:1px solid rgba(0,212,255,.2);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;box-shadow:0 0 18px rgba(0,212,255,.08),inset 0 0 18px rgba(0,212,255,.04)}
+.avatar svg{width:24px;height:24px;fill:var(--t3)}
+.cm{position:absolute;width:8px;height:8px}
+.cm.tl{top:2px;left:2px;border-top:1px solid var(--c);border-left:1px solid var(--c)}
+.cm.br{bottom:2px;right:2px;border-bottom:1px solid var(--c);border-right:1px solid var(--c)}
 
-.player-head{
-  display:flex;align-items:center;gap:14px;margin-bottom:18px;
-  padding-bottom:16px;border-bottom:1px solid var(--br);
-}
+.player-nick{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
+.player-role-badge{display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:2px 8px;border:1px solid rgba(0,212,255,.2);border-radius:2px;background:rgba(0,212,255,.05);font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--c)}
+.player-role-badge.new{border-color:rgba(0,255,170,.3);color:var(--green);background:rgba(0,255,170,.04)}
 
-.avatar{
-  width:52px;height:52px;border-radius:4px;
-  background:linear-gradient(135deg,var(--bg2),#0a2030);
-  border:1px solid rgba(0,212,255,.2);
-  display:flex;align-items:center;justify-content:center;
-  position:relative;flex-shrink:0;
-  box-shadow:0 0 20px rgba(0,212,255,.08),inset 0 0 20px rgba(0,212,255,.04);
+/* NEW PLAYER banner */
+.new-banner{
+  display:none;
+  padding:10px 12px;margin-bottom:12px;
+  background:linear-gradient(90deg,rgba(0,255,170,.06),rgba(0,255,170,.02));
+  border:1px solid rgba(0,255,170,.2);border-radius:3px;border-left:3px solid var(--green);
+  font-size:11.5px;font-weight:300;line-height:1.6;color:rgba(0,255,170,.8);
 }
-.avatar svg{width:26px;height:26px;fill:var(--t3)}
-/* corner marks */
-.avatar .cm{position:absolute;width:8px;height:8px}
-.avatar .cm.tl{top:2px;left:2px;border-top:1px solid var(--c);border-left:1px solid var(--c)}
-.avatar .cm.br{bottom:2px;right:2px;border-bottom:1px solid var(--c);border-right:1px solid var(--c)}
+.new-banner.show{display:block;animation:bannerIn .6s ease both}
+@keyframes bannerIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.new-banner strong{color:var(--green);font-weight:600;display:block;margin-bottom:3px;font-family:'Syne',sans-serif;font-size:12px;letter-spacing:1px}
 
-.player-ident{}
-.player-nick{
-  font-family:'Syne',sans-serif;
-  font-size:16px;font-weight:700;color:#fff;
-  letter-spacing:.5px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  max-width:200px;
-}
-.player-role-badge{
-  display:inline-flex;align-items:center;gap:5px;
-  margin-top:5px;padding:2px 8px;
-  border:1px solid rgba(0,212,255,.2);border-radius:2px;
-  background:rgba(0,212,255,.05);
-  font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--c);
-}
-
-.pfield{
-  display:flex;justify-content:space-between;align-items:flex-start;
-  padding:7px 0;border-bottom:1px solid rgba(0,212,255,.06);gap:8px;
-}
+.pfield{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid rgba(0,212,255,.06);gap:8px}
 .pfield:last-of-type{border-bottom:none}
 .pf-key{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:2px;color:var(--t3);flex-shrink:0;padding-top:1px}
 .pf-val{font-family:'Space Mono',monospace;font-size:10px;color:var(--t2);text-align:right;word-break:break-all;line-height:1.4}
 .pf-val.hi{color:var(--c);text-shadow:0 0 8px rgba(0,212,255,.4)}
-.pf-val.new{color:var(--amber)}
+.pf-val.fresh{color:var(--green)}
 
-.player-summary{
-  margin-top:14px;padding:12px 14px;
-  background:rgba(0,0,0,.3);
-  border-left:2px solid rgba(0,212,255,.25);
-  border-radius:0 3px 3px 0;
-  font-size:11.5px;font-weight:300;line-height:1.6;color:var(--t3);
-  font-style:italic;
-}
+.player-summary{margin-top:12px;padding:10px 12px;background:rgba(0,0,0,.3);border-left:2px solid rgba(0,212,255,.2);border-radius:0 3px 3px 0;font-size:11px;font-weight:300;line-height:1.6;color:var(--t3);font-style:italic}
 
-/* ═══ PROGRESS SECTION ═══ */
-.progress-section{
-  padding:16px 0 0;
-  border-top:1px solid var(--br);
-  animation:fadeIn 1s ease .3s both;
-}
-
-.prog-top{
-  display:flex;justify-content:space-between;align-items:flex-end;
-  margin-bottom:10px;
-}
-
-.prog-left{}
-.prog-type{
-  font-family:'Space Mono',monospace;
-  font-size:8px;letter-spacing:4px;color:rgba(0,212,255,.5);
-  margin-bottom:4px;text-transform:uppercase;
-}
-.prog-file{
-  font-family:'Space Mono',monospace;
-  font-size:10.5px;color:var(--t2);letter-spacing:.3px;
-  max-width:550px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-
+/* ═══ PROGRESS ═══ */
+.progress-section{padding:14px 0 0;border-top:1px solid var(--br);animation:fadeIn 1s ease .3s both}
+.prog-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:9px}
+.prog-type{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:4px;color:rgba(0,212,255,.5);margin-bottom:3px;text-transform:uppercase}
+.prog-file{font-family:'Space Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:.3px;max-width:560px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .prog-right{display:flex;align-items:baseline;gap:6px}
 .prog-size{font-family:'Space Mono',monospace;font-size:9px;color:var(--t3)}
-.prog-pct{
-  font-family:'Syne',sans-serif;
-  font-size:28px;font-weight:800;
-  color:var(--c);text-shadow:0 0 20px var(--c-glow);
-  line-height:1;letter-spacing:-1px;
-}
+.prog-pct{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--c);text-shadow:0 0 20px var(--c-glow);line-height:1;letter-spacing:-1px}
 .prog-pct span{font-family:'Space Mono',monospace;font-size:12px;font-weight:400;color:var(--t3)}
 
-/* Main bar */
-.bar-wrap{position:relative;height:4px;background:rgba(0,212,255,.07);border-radius:2px;overflow:hidden;margin-bottom:8px}
-.bar-glow{
-  position:absolute;top:-6px;left:0;height:16px;width:60px;
-  background:radial-gradient(ellipse,rgba(0,212,255,.3),transparent 70%);
-  pointer-events:none;transition:left .2s linear;
-}
-.bar-fill{
-  height:100%;border-radius:2px;width:0%;
-  background:linear-gradient(90deg,rgba(0,100,150,.6),var(--c));
-  box-shadow:0 0 8px var(--c);
-  transition:width .2s linear;
-  position:relative;
-}
+.bar-wrap{position:relative;height:4px;background:rgba(0,212,255,.07);border-radius:2px;overflow:hidden;margin-bottom:7px}
+.bar-fill{height:100%;border-radius:2px;width:0%;background:linear-gradient(90deg,rgba(0,100,150,.6),var(--c));box-shadow:0 0 8px var(--c);transition:width .2s linear}
+.bar-glow{position:absolute;top:-6px;left:0;height:16px;width:50px;background:radial-gradient(ellipse,rgba(0,212,255,.3),transparent 70%);pointer-events:none;transition:left .2s linear}
 
-/* Segment row */
-.segs{display:flex;gap:3px;margin-bottom:0}
-.seg{
-  flex:1;height:2px;border-radius:1px;
-  background:rgba(0,212,255,.06);transition:background .3s,box-shadow .3s;
-}
+.segs{display:flex;gap:3px}
+.seg{flex:1;height:2px;border-radius:1px;background:rgba(0,212,255,.06);transition:background .3s,box-shadow .3s}
 .seg.done{background:rgba(0,212,255,.5);box-shadow:0 0 3px rgba(0,212,255,.4)}
 .seg.act{background:rgba(0,212,255,.25);animation:sa .9s ease-in-out infinite}
 @keyframes sa{0%,100%{opacity:.25}50%{opacity:.7}}
 
 /* ═══ BOTTOM BAR ═══ */
-.bottombar{
-  display:flex;justify-content:space-between;align-items:center;
-  padding-top:12px;border-top:1px solid var(--br);
-  animation:fadeIn 1s ease .4s both;
-  position:relative;
-}
-.bottombar::before{
-  content:'';position:absolute;top:-1px;right:0;width:80px;height:1px;
-  background:linear-gradient(270deg,var(--c),transparent);
-}
+.bottombar{display:flex;justify-content:space-between;align-items:center;padding-top:11px;border-top:1px solid var(--br);animation:fadeIn 1s ease .4s both;position:relative}
+.bottombar::before{content:'';position:absolute;top:-1px;right:0;width:80px;height:1px;background:linear-gradient(270deg,var(--c),transparent)}
 .btm-left{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3)}
 .btm-left strong{color:var(--c);font-weight:400}
-.btm-mid{
-  font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
-  letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.35);
-}
-.btm-right{display:flex;align-items:center;gap:16px}
+.btm-mid{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.btm-right{display:flex;align-items:center;gap:14px}
 .time-display{font-family:'Space Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:2px}
 .ver{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3)}
-
 </style>
 </head>
 <body>
@@ -407,7 +237,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
 
 <div class="root">
 
-  <!-- TOP BAR -->
+  <!-- TOP -->
   <div class="topbar">
     <div class="brand">
       <div class="logo-wrap">
@@ -416,7 +246,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
              alt="LibeNet"
              onerror="this.style.display='none'">
       </div>
-      <div class="brand-text">
+      <div>
         <div class="brand-name">LibeNet</div>
         <div class="brand-sub">Game Server &nbsp;·&nbsp; Garry's Mod</div>
       </div>
@@ -433,21 +263,19 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
     </div>
   </div>
 
-  <!-- MAIN CONTENT -->
+  <!-- CONTENT -->
   <div class="content">
-
-    <!-- LEFT -->
     <div class="left-col">
 
-      <!-- Tip -->
+      <!-- Tips -->
       <div class="tip-card">
         <div class="sec-label">Совет</div>
         <div class="tip-eyebrow" id="tip-eye">ДОБРО ПОЖАЛОВАТЬ</div>
         <div class="tip-heading" id="tip-head">LibeNet</div>
-        <div class="tip-body" id="tip-body">Сервер находится на стадии активной разработки. Вы среди первых игроков — ваша обратная связь помогает строить идеальный проект!</div>
+        <div class="tip-body" id="tip-body">Загрузка...</div>
       </div>
 
-      <!-- Server strip -->
+      <!-- Server info -->
       <div class="server-strip">
         <div class="sinfo">
           <div class="sinfo-key">Режим</div>
@@ -469,52 +297,53 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
 
     </div>
 
-    <!-- RIGHT: Player -->
-    <div class="right-col">
-      <div class="player-card">
-        <div class="sec-label">Игрок</div>
+    <!-- PLAYER -->
+    <div class="player-card">
+      <div class="sec-label">Игрок</div>
 
-        <div class="player-head">
-          <div class="avatar">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-            <div class="cm tl"></div>
-            <div class="cm br"></div>
-          </div>
-          <div class="player-ident">
-            <div class="player-nick" id="pl-nick">Загрузка...</div>
-            <div class="player-role-badge" id="pl-role">ГРАЖДАНИН</div>
-          </div>
+      <div class="player-head">
+        <div class="avatar">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          <div class="cm tl"></div>
+          <div class="cm br"></div>
         </div>
-
-        <div class="pfield">
-          <div class="pf-key">Steam ID</div>
-          <div class="pf-val hi" id="pl-sid">—</div>
-        </div>
-        <div class="pfield">
-          <div class="pf-key">Последний вход</div>
-          <div class="pf-val" id="pl-last">—</div>
-        </div>
-        <div class="pfield">
-          <div class="pf-key">Всего заходов</div>
-          <div class="pf-val" id="pl-visits">—</div>
-        </div>
-        <div class="pfield">
-          <div class="pf-key">Наработано</div>
-          <div class="pf-val" id="pl-playtime">—</div>
-        </div>
-
-        <div class="player-summary" id="pl-summary">
-          Добро пожаловать на LibeNet! Приятной игры.
+        <div style="flex:1;min-width:0">
+          <div class="player-nick" id="pl-nick">—</div>
+          <div class="player-role-badge" id="pl-role">ГРАЖДАНИН</div>
         </div>
       </div>
-    </div>
 
+      <!-- New player banner -->
+      <div class="new-banner" id="new-banner">
+        <strong>🎮 Первый раз на сервере!</strong>
+        Добро пожаловать на LibeNet! Здесь тебя ждут крутая экономика, интересные профессии и дружное сообщество. Нажми F4 чтобы выбрать работу и начать своё приключение!
+      </div>
+
+      <div class="pfield">
+        <div class="pf-key">Steam ID</div>
+        <div class="pf-val hi" id="pl-sid">—</div>
+      </div>
+      <div class="pfield">
+        <div class="pf-key">Последний вход</div>
+        <div class="pf-val" id="pl-last">—</div>
+      </div>
+      <div class="pfield">
+        <div class="pf-key">Всего заходов</div>
+        <div class="pf-val" id="pl-visits">—</div>
+      </div>
+      <div class="pfield">
+        <div class="pf-key">Наработано</div>
+        <div class="pf-val" id="pl-playtime">—</div>
+      </div>
+
+      <div class="player-summary" id="pl-summary">Загрузка данных...</div>
+    </div>
   </div>
 
   <!-- PROGRESS -->
   <div class="progress-section">
     <div class="prog-top">
-      <div class="prog-left">
+      <div>
         <div class="prog-type" id="load-type">ИНИЦИАЛИЗАЦИЯ</div>
         <div class="prog-file" id="load-file">Подготовка движка...</div>
       </div>
@@ -530,7 +359,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
     <div class="segs" id="segs"></div>
   </div>
 
-  <!-- BOTTOM BAR -->
+  <!-- BOTTOM -->
   <div class="bottombar">
     <div class="btm-left">DEV &nbsp;//&nbsp; <strong>alvarez</strong></div>
     <div class="btm-mid">Приятной игры</div>
@@ -543,166 +372,160 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════
-   ДАННЫЕ С СЕРВЕРА
-   GMod передаёт переменные через вызов:
-     SetHTMLVariable("gmod_nick", nick)
-   Либо через URL-параметры для preview.
-   Ниже — авто-определение с фоллбеком на демо.
-════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   СИСТЕМА ДАННЫХ ИГРОКА
+   Приоритет:
+   1. URL-параметр (GMod передаёт через sv_loadingurl)
+   2. window.gmod_* (SetHTMLVariable)
+   3. localStorage (данные с прошлого визита)
+   4. Дефолт
+═══════════════════════════════════════════════════════ */
 
-function getVar(name, fallback) {
-  // 1. Глобальная JS-переменная (GMod SetHTMLVariable / Lua net)
-  if (typeof window[name] !== 'undefined') return String(window[name]);
-  // 2. URL-параметр (для тестирования: ?gmod_nick=TestPlayer)
+const LS_KEY = 'lbn_player';
+const NOW = new Date();
+
+function getParam(name, fallback = '') {
+  if (typeof window[name] !== 'undefined' && window[name]) return String(window[name]);
   const u = new URLSearchParams(location.search);
   if (u.has(name)) return u.get(name);
-  // 3. Демо-значение
   return fallback;
 }
 
-const DATA = {
-  nick:      getVar('gmod_nick',      'alvarez'),
-  steamid:   getVar('gmod_steamid',   'STEAM_0:1:123456789'),
-  lastjoin:  getVar('gmod_lastjoin',  'Первый заход'),
-  visits:    getVar('gmod_visits',    '1'),
-  playtime:  getVar('gmod_playtime',  '0 ч'),
-  role:      getVar('gmod_role',      'ГРАЖДАНИН'),
-  summary:   getVar('gmod_summary',   'Добро пожаловать на LibeNet! Хорошей игры и отличного времяпровождения.'),
-  // Серверные данные
-  gamemode:  getVar('gmod_gamemode',  'DarkRP'),
-  map:       getVar('gmod_map',       'gm_construct'),
-  players:   getVar('gmod_players',   '0/32'),
-  ping:      getVar('gmod_ping',      '—'),
+function fmtDate(d) {
+  return d.toLocaleDateString('ru-RU', {day:'2-digit',month:'2-digit',year:'numeric'})
+    + ' ' + d.toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
+}
+
+function fmtPlaytime(minutes) {
+  if (!minutes || minutes < 1) return '< 1 мин';
+  if (minutes < 60) return minutes + ' мин';
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return h + ' ч ' + (m > 0 ? m + ' мин' : '');
+}
+
+/* ── Загрузка сохранённых данных ── */
+let saved = null;
+try { saved = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e) {}
+
+/* ── Получаем данные с сервера (URL или window) ── */
+const fromServer = {
+  nick:     getParam('gmod_nick'),
+  steamid:  getParam('gmod_steamid'),
+  gamemode: getParam('gmod_gamemode'),
+  map:      getParam('gmod_map'),
+  players:  getParam('gmod_players'),
+  ping:     getParam('gmod_ping'),
+  playtime: getParam('gmod_playtime'), // минуты, число
 };
 
-// Заполняем DOM
-document.getElementById('pl-nick').textContent    = DATA.nick;
-document.getElementById('pl-sid').textContent     = DATA.steamid;
-document.getElementById('pl-last').textContent    = DATA.lastjoin;
-document.getElementById('pl-visits').textContent  = DATA.visits + ' раз(а)';
-document.getElementById('pl-playtime').textContent= DATA.playtime;
-document.getElementById('pl-role').textContent    = DATA.role;
-document.getElementById('pl-summary').textContent = DATA.summary;
+/* ── Определяем, кто заходит ── */
+// Если Steam ID совпадает с сохранённым — это возвращение того же игрока
+const isSamePlayer = saved && saved.steamid && fromServer.steamid
+  && saved.steamid === fromServer.steamid;
 
-document.getElementById('srv-mode').textContent   = DATA.gamemode;
-document.getElementById('srv-map').textContent    = DATA.map;
-document.getElementById('srv-players').textContent= DATA.players;
-document.getElementById('srv-ping').textContent   = DATA.ping !== '—' ? DATA.ping + ' ms' : '— ms';
+const isNewPlayer = !isSamePlayer;
 
-// Пометить первый заход
-if (DATA.visits === '1') {
-  document.getElementById('pl-visits').classList.add('new');
-  document.getElementById('pl-last').textContent = 'Первый заход!';
-  document.getElementById('pl-last').classList.add('new');
+/* ── Формируем итоговый объект игрока ── */
+const nick    = fromServer.nick     || (saved && saved.nick)    || 'Игрок';
+const steamid = fromServer.steamid  || (saved && saved.steamid) || '—';
+
+const visits  = isSamePlayer
+  ? (parseInt(saved.visits || 0) + 1)
+  : 1;
+
+const playtimeMinutes = fromServer.playtime
+  ? parseInt(fromServer.playtime)
+  : (isSamePlayer && saved.playtime ? parseInt(saved.playtime) : 0);
+
+const lastJoin = isSamePlayer && saved.lastJoin
+  ? fmtDate(new Date(saved.lastJoin))
+  : (isNewPlayer ? 'Первый заход!' : '—');
+
+/* ── Сохраняем обновлённые данные ── */
+const toSave = {
+  nick:      nick,
+  steamid:   steamid,
+  visits:    visits,
+  playtime:  playtimeMinutes,
+  lastJoin:  NOW.toISOString(),
+};
+try { localStorage.setItem(LS_KEY, JSON.stringify(toSave)); } catch(e) {}
+
+/* ── Заполняем DOM ── */
+
+// Никнейм и Steam ID
+document.getElementById('pl-nick').textContent = nick;
+document.getElementById('pl-sid').textContent  = steamid || '—';
+
+// Роль
+const roleEl = document.getElementById('pl-role');
+roleEl.textContent = isNewPlayer ? 'НОВЫЙ ИГРОК' : 'ГРАЖДАНИН';
+if (isNewPlayer) roleEl.classList.add('new');
+
+// Баннер нового игрока
+if (isNewPlayer) {
+  document.getElementById('new-banner').classList.add('show');
 }
 
-/* ═══════════════════════════════════════════════
-   ЗАГРУЗОЧНЫЕ СТАДИИ (реальный GMod DarkRP поток)
-════════════════════════════════════════════════ */
-const STAGES = [
-  ['ДВИЖОК',        'engine/garrysmod.dll',                              0,      320],
-  ['ДВИЖОК',        'engine/shaderapidx9.dll',                           0,      260],
-  ['ДВИЖОК',        'engine/vphysics.dll',                               0,      180],
-  ['МАТЕРИАЛЫ',     'materials/libenet/hud/hud_base.vtf',                1.2,    480],
-  ['МАТЕРИАЛЫ',     'materials/libenet/hud/icons_sprite.vtf',            0.8,    360],
-  ['МАТЕРИАЛЫ',     'materials/' + DATA.gamemode.toLowerCase() + '/props_city01.vtf', 2.4, 620],
-  ['МАТЕРИАЛЫ',     'materials/' + DATA.gamemode.toLowerCase() + '/props_city02.vtf', 3.1, 700],
-  ['МАТЕРИАЛЫ',     'materials/effects/flashlight001.vtf',               1.1,    380],
-  ['МОДЕЛИ',        'models/player/urban.mdl',                           5.2,    680],
-  ['МОДЕЛИ',        'models/props_c17/furniture_chair01a.mdl',           3.6,    540],
-  ['МОДЕЛИ',        'models/props_c17/tv_monitor01.mdl',                 2.9,    480],
-  ['МОДЕЛИ',        'models/weapons/c_pistol.mdl',                       4.1,    520],
-  ['ЗВУКИ',         'sound/libenet/ui/notify.wav',                       0.2,    160],
-  ['ЗВУКИ',         'sound/ambient/city/city_amb01.wav',                 4.3,    520],
-  ['ЗВУКИ',         'sound/npc/metropolice/vo/freeze.wav',               0.4,    200],
-  ['СКРИПТЫ',       'lua/autorun/' + DATA.gamemode.toLowerCase() + '_config.lua',  0.1, 240],
-  ['СКРИПТЫ',       'lua/libenet/core/sh_init.lua',                      0.2,    290],
-  ['СКРИПТЫ',       'lua/libenet/modules/sh_economy.lua',                0.2,    260],
-  ['СКРИПТЫ',       'lua/libenet/modules/sh_jobs.lua',                   0.2,    250],
-  ['СКРИПТЫ',       'lua/libenet/modules/sh_police.lua',                 0.1,    210],
-  ['СКРИПТЫ',       'lua/libenet/hud/cl_hud_main.lua',                   0.2,    230],
-  ['КАРТА',         'maps/' + DATA.map + '.bsp',                         48.0,   1300],
-  ['КАРТА',         'maps/' + DATA.map + '.nav',                          2.3,    360],
-  ['СИНХРОНИЗАЦИЯ', 'sv_download: libenet/content/v0.3',                  0,     650],
-  ['СИНХРОНИЗАЦИЯ', 'workshop: libenet_base_content',                     0,     480],
-  ['ГОТОВО',        'Сервер LibeNet готов — добро пожаловать!',           0,     400],
+// Последний заход
+const lastEl = document.getElementById('pl-last');
+lastEl.textContent = lastJoin;
+if (isNewPlayer) lastEl.classList.add('fresh');
+
+// Заходы
+document.getElementById('pl-visits').textContent = visits + ' раз(а)';
+
+// Наработка
+document.getElementById('pl-playtime').textContent = fmtPlaytime(playtimeMinutes);
+
+// Краткая сводка
+const summaryEl = document.getElementById('pl-summary');
+if (isNewPlayer) {
+  summaryEl.textContent = 'Ты впервые на LibeNet — нажми F4 чтобы выбрать профессию. Удачи!';
+} else {
+  const ago = Math.round((NOW - new Date(saved.lastJoin)) / 60000);
+  let agoStr;
+  if      (ago < 2)    agoStr = 'только что';
+  else if (ago < 60)   agoStr = ago + ' мин назад';
+  else if (ago < 1440) agoStr = Math.round(ago/60) + ' ч назад';
+  else                 agoStr = Math.round(ago/1440) + ' д назад';
+  summaryEl.textContent = 'Снова привет, ' + nick + '! Последний визит: ' + agoStr + '. Заходов: ' + visits + '.';
+}
+
+/* Серверные данные */
+const gamemode = fromServer.gamemode || (saved && saved.gamemode) || 'DarkRP';
+const map      = fromServer.map      || (saved && saved.map)      || 'gm_construct';
+const players  = fromServer.players  || '—';
+const ping     = fromServer.ping;
+
+document.getElementById('srv-mode').textContent    = gamemode;
+document.getElementById('srv-map').textContent     = map;
+document.getElementById('srv-players').textContent = players;
+if (ping) document.getElementById('srv-ping').textContent = ping + ' ms';
+
+/* ═══════════════════════════════════════════════════════
+   СОВЕТЫ — зависят от того, новый игрок или нет
+═══════════════════════════════════════════════════════ */
+const TIPS_NEW = [
+  { e:'ПЕРВЫЙ РАЗ?', h:'Добро пожаловать!', b:'LibeNet — твой новый дом. Здесь тебя ждут экономика, криминал, закон и масса возможностей. Начни с нажатия F4!' },
+  { e:'С ЧЕГО НАЧАТЬ', h:'Выбери профессию', b:'Открой меню F4 и выбери работу. Начни с простого — торговца или фермера. Деньги открывают новые пути!' },
+  { e:'СОВЕТ НОВИЧКУ', h:'Читай чат', b:'В чате сервера ты найдёшь помощь от других игроков. Не бойся спрашивать — сообщество LibeNet дружелюбное.' },
+  { e:'ПРАВИЛА', h:'FearRP', b:'Твой персонаж дорожит жизнью — веди себя реалистично. RDM (убийство без причины) запрещён и наказывается баном.' },
+  { e:'КОМАНДА', h:'alvarez', b:'LibeNet создаётся с любовью к каждой детали. Нашли баг — пишите !report. Ваш отзыв делает сервер лучше!' },
 ];
 
-const TOTAL_MS  = STAGES.reduce((s, x) => s + x[3], 0);
-const SEG_N = 18;
-
-/* Build segments */
-const segWrap = document.getElementById('segs');
-for (let i = 0; i < SEG_N; i++) {
-  const d = document.createElement('div'); d.className = 'seg'; d.id = 'sg' + i;
-  segWrap.appendChild(d);
-}
-
-const typeEl = document.getElementById('load-type');
-const fileEl = document.getElementById('load-file');
-const sizeEl = document.getElementById('load-size');
-const pctEl  = document.getElementById('pct');
-const barEl  = document.getElementById('bar-fill');
-const glowEl = document.getElementById('bar-glow');
-
-function fmtMB(mb) { return mb >= 1 ? mb.toFixed(1) + ' MB' : (mb*1024).toFixed(0) + ' KB'; }
-
-function setSegs(pct) {
-  const done = Math.floor(pct / 100 * SEG_N);
-  for (let i = 0; i < SEG_N; i++) {
-    document.getElementById('sg' + i).className =
-      'seg' + (i < done ? ' done' : i === done ? ' act' : '');
-  }
-}
-
-let elapsed = 0, sIdx = 0, sElapsed = 0, lastTs = null;
-
-function tick(ts) {
-  if (!lastTs) lastTs = ts;
-  const dt = Math.min(ts - lastTs, 80); lastTs = ts;
-  elapsed += dt; sElapsed += dt;
-
-  while (sIdx < STAGES.length - 1 && sElapsed >= STAGES[sIdx][3]) {
-    sElapsed -= STAGES[sIdx][3]; sIdx++;
-  }
-
-  const st = STAGES[sIdx];
-  const sp = Math.min(sElapsed / st[3], 1);
-  let doneMs = 0;
-  for (let i = 0; i < sIdx; i++) doneMs += STAGES[i][3];
-  const rawPct = Math.min((doneMs + sElapsed) / TOTAL_MS * 100, 99.8);
-
-  pctEl.textContent     = Math.round(rawPct);
-  barEl.style.width     = rawPct + '%';
-  glowEl.style.left     = (rawPct - 3) + '%';
-  setSegs(rawPct);
-  typeEl.textContent    = st[0];
-  fileEl.textContent    = st[1];
-  sizeEl.textContent    = st[2] ? (st[2] * sp).toFixed(1) + ' / ' + fmtMB(st[2]) : '';
-
-  if (elapsed < TOTAL_MS + 200) requestAnimationFrame(tick);
-  else {
-    pctEl.textContent = '100'; barEl.style.width = '100%';
-    glowEl.style.display = 'none'; setSegs(100);
-    typeEl.textContent = 'ГОТОВО';
-    fileEl.textContent = 'LibeNet загружен — добро пожаловать!';
-    sizeEl.textContent = '';
-  }
-}
-requestAnimationFrame(tick);
-
-/* ═══ TIPS ═══ */
-const TIPS = [
-  { e:'ДОБРО ПОЖАЛОВАТЬ', h:'LibeNet', b:'Сервер в активной разработке. Вы среди первых — ваша обратная связь помогает строить лучший проект!' },
-  { e:'ИГРОВОЙ РЕЖИМ', h:DATA.gamemode, b:'Выберите профессию в F4-меню. Работайте, торгуйте, стройте бизнес и живите по правилам города.' },
-  { e:'ЭКОНОМИКА', h:'Деньги решают', b:'Принтеры денег — быстрый доход. Охраняйте их! Полиция и бандиты не спят.' },
-  { e:'ПРАВИЛА', h:'FearRP', b:'Ваш персонаж дорожит жизнью. RDM и пропкилл запрещены — нарушителей ждёт бан.' },
-  { e:'АДМИНИСТРАЦИЯ', h:'Нашли баг?', b:'Сообщайте через !report или @ в чат. Ваш отзыв ускоряет разработку LibeNet.' },
-  { e:'КОМАНДА', h:'alvarez', b:'LibeNet создаётся с вниманием к каждой детали. Спасибо, что вы с нами с самого начала!' },
+const TIPS_RETURN = [
+  { e:'С ВОЗВРАЩЕНИЕМ', h:'Снова в деле!', b:'Рады снова видеть тебя на LibeNet. Пока тебя не было, мы не стояли на месте — проверь обновления!' },
+  { e:gamemode.toUpperCase(), h:'Твой город', b:'Возвращайся к своей работе, бизнесу и деньгам. Экономика сервера ждёт тебя. Нажми F4 чтобы вернуться в роль.' },
+  { e:'ОБНОВЛЕНИЯ', h:'Что нового?', b:'Сервер постоянно развивается. Разработчик alvarez работает над новыми фичами — следи за анонсами в дискорде!' },
+  { e:'СОВЕТ', h:'Копи валюту', b:'Не трать всё сразу — вложи в принтер или бизнес. Пассивный доход на LibeNet реально работает.' },
+  { e:'КОМАНДА', h:'alvarez', b:'LibeNet строится вокруг обратной связи игроков. Ты — часть этого проекта с самого начала.' },
 ];
 
+const TIPS = isNewPlayer ? TIPS_NEW : TIPS_RETURN;
 let tIdx = 0;
+
 const eyeEl  = document.getElementById('tip-eye');
 const headEl = document.getElementById('tip-head');
 const bodyEl = document.getElementById('tip-body');
@@ -714,19 +537,111 @@ function showTip(i) {
     headEl.textContent = TIPS[i].h;
     bodyEl.textContent = TIPS[i].b;
     [eyeEl, headEl, bodyEl].forEach(el => { el.style.transition = 'opacity .5s'; el.style.opacity = '1'; });
-  }, 400);
+  }, 380);
 }
+showTip(0);
 setInterval(() => { tIdx = (tIdx + 1) % TIPS.length; showTip(tIdx); }, 5500);
 
+/* ═══════════════════════════════════════════════════════
+   ЗАГРУЗОЧНЫЕ СТАДИИ
+═══════════════════════════════════════════════════════ */
+const STAGES = [
+  ['ДВИЖОК',        'engine/garrysmod.dll',                               0,     320],
+  ['ДВИЖОК',        'engine/shaderapidx9.dll',                            0,     250],
+  ['ДВИЖОК',        'engine/vphysics.dll',                                0,     180],
+  ['МАТЕРИАЛЫ',     'materials/libenet/hud/hud_base.vtf',                 1.2,   480],
+  ['МАТЕРИАЛЫ',     'materials/libenet/hud/icons_sprite.vtf',             0.8,   360],
+  ['МАТЕРИАЛЫ',     'materials/' + gamemode.toLowerCase() + '/city01.vtf',2.4,   600],
+  ['МАТЕРИАЛЫ',     'materials/' + gamemode.toLowerCase() + '/city02.vtf',3.1,   680],
+  ['МАТЕРИАЛЫ',     'materials/effects/flashlight001.vtf',                1.1,   360],
+  ['МОДЕЛИ',        'models/player/urban.mdl',                            5.2,   660],
+  ['МОДЕЛИ',        'models/props_c17/furniture_chair01a.mdl',            3.6,   530],
+  ['МОДЕЛИ',        'models/weapons/c_pistol.mdl',                        4.1,   510],
+  ['МОДЕЛИ',        'models/props_c17/tv_monitor01.mdl',                  2.9,   460],
+  ['ЗВУКИ',         'sound/libenet/ui/notify.wav',                        0.2,   160],
+  ['ЗВУКИ',         'sound/ambient/city/city_amb01.wav',                  4.3,   510],
+  ['СКРИПТЫ',       'lua/autorun/' + gamemode.toLowerCase() + '_config.lua', 0.1, 230],
+  ['СКРИПТЫ',       'lua/libenet/core/sh_init.lua',                       0.2,   280],
+  ['СКРИПТЫ',       'lua/libenet/modules/sh_economy.lua',                 0.2,   250],
+  ['СКРИПТЫ',       'lua/libenet/modules/sh_jobs.lua',                    0.2,   240],
+  ['СКРИПТЫ',       'lua/libenet/hud/cl_hud_main.lua',                    0.2,   220],
+  ['КАРТА',         'maps/' + map + '.bsp',                               48.0,  1300],
+  ['КАРТА',         'maps/' + map + '.nav',                               2.3,   350],
+  ['СИНХРОНИЗАЦИЯ', 'sv_download: libenet/content/v0.3',                  0,     620],
+  ['СИНХРОНИЗАЦИЯ', 'workshop: libenet_base_content',                     0,     460],
+  ['ГОТОВО',        'LibeNet готов — добро пожаловать!',                  0,     380],
+];
+
+const TOTAL_MS = STAGES.reduce((s, x) => s + x[3], 0);
+const SEG_N = 18;
+
+const segWrap = document.getElementById('segs');
+for (let i = 0; i < SEG_N; i++) {
+  const d = document.createElement('div'); d.className = 'seg'; d.id = 'sg' + i;
+  segWrap.appendChild(d);
+}
+
+const typeEl2 = document.getElementById('load-type');
+const fileEl2 = document.getElementById('load-file');
+const sizeEl  = document.getElementById('load-size');
+const pctEl   = document.getElementById('pct');
+const barEl   = document.getElementById('bar-fill');
+const glowEl  = document.getElementById('bar-glow');
+
+function fmtMB(mb) { return mb >= 1 ? mb.toFixed(1) + ' MB' : (mb * 1024).toFixed(0) + ' KB'; }
+function setSegs(pct) {
+  const done = Math.floor(pct / 100 * SEG_N);
+  for (let i = 0; i < SEG_N; i++) {
+    document.getElementById('sg' + i).className =
+      'seg' + (i < done ? ' done' : i === done ? ' act' : '');
+  }
+}
+
+let elapsed = 0, sIdx = 0, sElapsed = 0, lastTs = null;
+function tick(ts) {
+  if (!lastTs) lastTs = ts;
+  const dt = Math.min(ts - lastTs, 80); lastTs = ts;
+  elapsed += dt; sElapsed += dt;
+
+  while (sIdx < STAGES.length - 1 && sElapsed >= STAGES[sIdx][3]) {
+    sElapsed -= STAGES[sIdx][3]; sIdx++;
+  }
+  const st = STAGES[sIdx];
+  const sp = Math.min(sElapsed / st[3], 1);
+  let doneMs = 0;
+  for (let i = 0; i < sIdx; i++) doneMs += STAGES[i][3];
+  const rawPct = Math.min((doneMs + sElapsed) / TOTAL_MS * 100, 99.8);
+
+  pctEl.textContent  = Math.round(rawPct);
+  barEl.style.width  = rawPct + '%';
+  glowEl.style.left  = Math.max(rawPct - 3, 0) + '%';
+  setSegs(rawPct);
+  typeEl2.textContent = st[0];
+  fileEl2.textContent = st[1];
+  sizeEl.textContent  = st[2] ? (st[2] * sp).toFixed(1) + ' / ' + fmtMB(st[2]) : '';
+
+  if (elapsed < TOTAL_MS + 200) requestAnimationFrame(tick);
+  else {
+    pctEl.textContent = '100'; barEl.style.width = '100%';
+    glowEl.style.display = 'none'; setSegs(100);
+    typeEl2.textContent = 'ГОТОВО';
+    fileEl2.textContent = isNewPlayer
+      ? 'Добро пожаловать на LibeNet! Первый шаг в новый мир.'
+      : 'LibeNet загружен — рады видеть тебя снова, ' + nick + '!';
+    sizeEl.textContent = '';
+  }
+}
+requestAnimationFrame(tick);
+
 /* ═══ CLOCK ═══ */
-function updateClock() {
+function clock() {
   const d = new Date();
   document.getElementById('clock').textContent =
-    d.getHours().toString().padStart(2,'0') + ':' +
-    d.getMinutes().toString().padStart(2,'0') + ':' +
-    d.getSeconds().toString().padStart(2,'0');
+    String(d.getHours()).padStart(2,'0') + ':' +
+    String(d.getMinutes()).padStart(2,'0') + ':' +
+    String(d.getSeconds()).padStart(2,'0');
 }
-updateClock(); setInterval(updateClock, 1000);
+clock(); setInterval(clock, 1000);
 
 /* ═══ PARTICLES ═══ */
 const cvs = document.getElementById('cvs');
@@ -734,31 +649,31 @@ const ctx = cvs.getContext('2d');
 cvs.width = innerWidth; cvs.height = innerHeight;
 window.addEventListener('resize', () => { cvs.width = innerWidth; cvs.height = innerHeight; });
 
-const DOTS = Array.from({length: 50}, () => ({
-  x: Math.random() * cvs.width, y: Math.random() * cvs.height,
-  r: Math.random() * 1.3 + .2,
-  vx: (Math.random() - .5) * .2, vy: (Math.random() - .5) * .2,
-  a: Math.random() * .35 + .06,
+const DOTS = Array.from({length:50}, () => ({
+  x: Math.random()*cvs.width, y: Math.random()*cvs.height,
+  r: Math.random()*1.3+.2,
+  vx:(Math.random()-.5)*.2, vy:(Math.random()-.5)*.2,
+  a: Math.random()*.35+.06,
 }));
 
 (function frame() {
-  ctx.clearRect(0, 0, cvs.width, cvs.height);
+  ctx.clearRect(0,0,cvs.width,cvs.height);
   DOTS.forEach(d => {
-    d.x = (d.x + d.vx + cvs.width)  % cvs.width;
-    d.y = (d.y + d.vy + cvs.height) % cvs.height;
-    ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(0,200,240,${d.a})`; ctx.fill();
+    d.x = (d.x+d.vx+cvs.width)%cvs.width;
+    d.y = (d.y+d.vy+cvs.height)%cvs.height;
+    ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(0,200,240,${d.a})`; ctx.fill();
   });
-  for (let i = 0; i < DOTS.length; i++)
-    for (let j = i+1; j < DOTS.length; j++) {
-      const dx = DOTS[i].x-DOTS[j].x, dy = DOTS[i].y-DOTS[j].y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < 85) {
+  for (let i=0;i<DOTS.length;i++)
+    for (let j=i+1;j<DOTS.length;j++) {
+      const dx=DOTS[i].x-DOTS[j].x, dy=DOTS[i].y-DOTS[j].y;
+      const dist=Math.hypot(dx,dy);
+      if (dist<85) {
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(0,200,240,${.06*(1-dist/85)})`;
-        ctx.lineWidth = .4;
-        ctx.moveTo(DOTS[i].x, DOTS[i].y);
-        ctx.lineTo(DOTS[j].x, DOTS[j].y);
+        ctx.strokeStyle=`rgba(0,200,240,${.06*(1-dist/85)})`;
+        ctx.lineWidth=.4;
+        ctx.moveTo(DOTS[i].x,DOTS[i].y);
+        ctx.lineTo(DOTS[j].x,DOTS[j].y);
         ctx.stroke();
       }
     }
