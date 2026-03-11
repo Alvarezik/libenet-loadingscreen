@@ -4,235 +4,268 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LibeNet</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Exo+2:wght@200;300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
 
 :root{
-  --bg:     #03080d;
-  --bg1:    #050e17;
-  --bg2:    #071624;
-  --c:      #00d4ff;
-  --c2:     #0099cc;
-  --c-dim:  rgba(0,212,255,.12);
-  --c-glow: rgba(0,212,255,.5);
-  --amber:  #ffaa00;
-  --red:    #ff3355;
+  --bg:     #030a10;
+  --panel:  #05111c;
+  --c:      #00cfff;
+  --c-glow: rgba(0,207,255,.55);
+  --amber:  #ffb300;
   --green:  #00ffaa;
-  --t1:     #e8f4ff;
-  --t2:     #6a9ab8;
-  --t3:     #2d5470;
-  --br:     rgba(0,212,255,.1);
-}
+  --t1:     #ddeeff;
+  --t2:     #5a8fac;
+  --t3:     #243d52;
+  --line:   rgba(0,207,255,.1);
+  --line2:  rgba(0,207,255,.06);
 
-html,body{width:100%;height:100%;overflow:hidden}
+  /* GMod panel reserved area — bottom-right */
+  --gw: 420px;
+  --gh: 110px;
+}
 
 body{
   background:var(--bg);
   font-family:'Exo 2',sans-serif;
   color:var(--t1);
-  display:flex;
-  flex-direction:column;
-  position:relative;
 }
 
-.bg-hex{
+/* ── BG ── */
+.bg-grid{
   position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='92'%3E%3Cpolygon points='40,2 78,22 78,70 40,90 2,70 2,22' fill='none' stroke='rgba(0,180,220,0.055)' stroke-width='1'/%3E%3C/svg%3E");
-  background-size:80px 92px;
-  animation:hexShift 30s linear infinite;
+  background-image:
+    linear-gradient(var(--line2) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line2) 1px,transparent 1px);
+  background-size:48px 48px;
+  animation:gm 26s linear infinite;
 }
-@keyframes hexShift{to{background-position:80px 46px}}
+@keyframes gm{to{background-position:48px 48px}}
 
-.bg-vignette{
+.bg-scan{
   position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 30%,rgba(2,6,12,.9) 100%);
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
 }
-.bg-lines{
+.bg-vign{
   position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,180,220,.015) 3px,rgba(0,180,220,.015) 4px);
+  background:radial-gradient(ellipse 90% 90% at 50% 50%,transparent 20%,rgba(1,5,10,.93) 100%);
 }
 
-.glow{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
-.glow.tl{width:500px;height:500px;background:rgba(0,120,200,.18);top:-200px;left:-150px;animation:gp 9s ease-in-out infinite}
-.glow.br{width:600px;height:600px;background:rgba(0,60,150,.14);bottom:-250px;right:-200px;animation:gp 12s ease-in-out infinite reverse}
-.glow.mid{width:250px;height:250px;background:rgba(0,200,255,.06);top:45%;left:55%;animation:gp 7s ease-in-out infinite .5s}
-@keyframes gp{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+.orb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;animation:op 10s ease-in-out infinite}
+.orb.a{width:580px;height:580px;background:rgba(0,95,185,.15);top:-190px;left:-160px}
+.orb.b{width:500px;height:500px;background:rgba(0,45,125,.11);bottom:-190px;right:-150px;animation-direction:reverse;animation-duration:14s}
+.orb.c{width:220px;height:220px;background:rgba(0,175,255,.05);top:38%;right:20%;animation-duration:8s}
+@keyframes op{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.2);opacity:1}}
 
-canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
+canvas#cvs{position:fixed;inset:0;pointer-events:none;z-index:1}
 
-/* ═══ LAYOUT ═══ */
+/* ── ROOT LAYOUT ── */
 .root{
   position:relative;z-index:10;
+  height:100vh;
   display:grid;
   grid-template-rows:auto 1fr auto auto;
-  height:100vh;
-  padding:20px 28px 18px;
-  gap:0;
+  padding:18px 24px 0 24px;
+  gap:12px;
 }
 
-/* ═══ TOP BAR ═══ */
+/* ── TOP BAR ── */
 .topbar{
   display:flex;align-items:center;justify-content:space-between;
-  padding-bottom:16px;
-  border-bottom:1px solid var(--br);
+  padding-bottom:14px;border-bottom:1px solid var(--line);
   position:relative;
-  animation:slideDown .7s cubic-bezier(.2,.8,.4,1) both;
+  animation:sd .65s cubic-bezier(.2,.8,.4,1) both;
 }
-@keyframes slideDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
-.topbar::after{content:'';position:absolute;bottom:-1px;left:0;width:120px;height:1px;background:linear-gradient(90deg,var(--c),transparent)}
+@keyframes sd{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+.topbar::after{content:'';position:absolute;bottom:-1px;left:0;width:110px;height:1px;background:linear-gradient(90deg,var(--c),transparent)}
 
-.brand{display:flex;align-items:center;gap:16px}
-.logo-wrap{position:relative;padding:3px}
-.logo-wrap::before{content:'';position:absolute;inset:0;border-radius:6px;background:linear-gradient(135deg,var(--c),transparent 60%);opacity:.35}
-.logo-img{height:42px;width:auto;display:block;position:relative;z-index:1;filter:drop-shadow(0 0 10px var(--c-glow));animation:logoB 4s ease-in-out infinite}
-@keyframes logoB{0%,100%{filter:drop-shadow(0 0 8px rgba(0,212,255,.4))}50%{filter:drop-shadow(0 0 22px rgba(0,212,255,.9))}}
-
-.brand-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:8px;background:linear-gradient(90deg,#fff 60%,var(--c));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.brand-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--t3);margin-top:2px;text-transform:uppercase}
-
-.topright{display:flex;align-items:center;gap:14px}
-.server-ping{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3);display:flex;align-items:center;gap:6px}
-.ping-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
-
-.dev-badge{
-  display:flex;align-items:center;gap:9px;padding:6px 15px 6px 10px;
-  border:1px solid rgba(255,170,0,.25);border-radius:3px;
-  background:rgba(255,170,0,.03);
-  clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%,0% 8px);
+.brand{display:flex;align-items:center;gap:14px}
+.logo-frame{position:relative;padding:2px;border-radius:6px;background:linear-gradient(135deg,rgba(0,207,255,.28),transparent 60%)}
+.logo-img{
+  height:40px;width:auto;display:block;position:relative;z-index:1;
+  filter:drop-shadow(0 0 8px rgba(0,207,255,.45));
+  animation:lb 4s ease-in-out infinite;
 }
-.dev-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber);animation:blink 1.4s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
-.dev-badge-text{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--amber)}
+@keyframes lb{0%,100%{filter:drop-shadow(0 0 7px rgba(0,207,255,.38))}50%{filter:drop-shadow(0 0 20px rgba(0,207,255,.82))}}
+.brand-name{
+  font-family:'Syne',sans-serif;font-size:20px;font-weight:800;
+  letter-spacing:9px;text-transform:uppercase;
+  background:linear-gradient(90deg,#fff 50%,var(--c));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.brand-sub{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:4px;color:var(--t3);margin-top:2px;text-transform:uppercase}
 
-/* ═══ CONTENT ═══ */
+.top-right{display:flex;align-items:center;gap:12px}
+.ping-chip{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--t3)}
+.ping-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:bl 2s ease-in-out infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.12}}
+.dev-pill{
+  display:flex;align-items:center;gap:8px;padding:5px 14px 5px 9px;
+  border:1px solid rgba(255,179,0,.2);border-radius:2px;background:rgba(255,179,0,.03);
+  clip-path:polygon(7px 0%,100% 0%,100% 100%,0% 100%,0% 7px);
+}
+.dev-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 7px var(--amber);animation:bl 1.4s ease-in-out infinite}
+.dev-label{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:3px;color:var(--amber)}
+
+/* ── CONTENT ── */
 .content{
-  display:grid;
-  grid-template-columns:1fr 310px;
-  gap:14px;
-  padding:14px 0;
-  animation:fadeIn .9s ease .15s both;
+  display:grid;grid-template-columns:1fr 296px;gap:12px;min-height:0;
+  animation:fu .8s ease .1s both;
 }
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.left-col{display:flex;flex-direction:column;gap:12px;min-height:0}
 
-.left-col{display:flex;flex-direction:column;gap:12px}
-
-/* Tip card */
-.tip-card{
-  flex:1;
-  background:linear-gradient(135deg,rgba(0,212,255,.04) 0%,rgba(0,30,60,.6) 100%);
-  border:1px solid var(--br);border-radius:4px;
-  padding:20px 24px;position:relative;overflow:hidden;
-}
-.tip-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--c),rgba(0,212,255,.2),transparent)}
-.tip-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--c),transparent);opacity:.6}
-
-.sec-label{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:4px;color:var(--t3);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.sec-label::before{content:'';width:16px;height:1px;background:var(--c);opacity:.5}
-
-.tip-eyebrow{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--c);margin-bottom:7px;transition:opacity .35s}
-.tip-heading{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:9px;transition:opacity .35s;letter-spacing:.5px}
-.tip-body{font-size:13px;font-weight:300;line-height:1.7;color:var(--t2);transition:opacity .35s}
-
-/* Server strip */
-.server-strip{
-  background:rgba(0,15,30,.7);border:1px solid var(--br);border-radius:4px;
-  padding:12px 18px;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+/* Panel base */
+.pane{
+  background:var(--panel);border:1px solid var(--line);border-radius:3px;
   position:relative;overflow:hidden;
 }
-.server-strip::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.2}
-.sinfo{display:flex;flex-direction:column;gap:4px;padding:0 16px;border-right:1px solid var(--br)}
-.sinfo:first-child{padding-left:0}
-.sinfo:last-child{border-right:none}
-.sinfo-key{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--t3);text-transform:uppercase}
-.sinfo-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:.5px}
-.sinfo-val.c{color:var(--c);text-shadow:0 0 12px var(--c-glow)}
-.sinfo-val.g{color:var(--green);text-shadow:0 0 8px rgba(0,255,170,.4)}
-.sinfo-val.a{color:var(--amber)}
-.sinfo-val.sm{font-size:11px;font-family:'Space Mono',monospace;letter-spacing:0;word-break:break-all}
+.pane::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--c),rgba(0,207,255,.12),transparent)}
+.pane::after{content:'';position:absolute;top:0;left:0;width:3px;height:55%;background:linear-gradient(180deg,var(--c),transparent);opacity:.45}
 
-/* ═══ PLAYER CARD ═══ */
-.player-card{
-  background:linear-gradient(160deg,rgba(0,212,255,.06) 0%,rgba(0,15,35,.85) 100%);
-  border:1px solid var(--br);border-radius:4px;
-  padding:18px;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;
+.plabel{
+  font-family:'Space Mono',monospace;font-size:8px;letter-spacing:4px;
+  color:var(--t3);text-transform:uppercase;margin-bottom:11px;
+  display:flex;align-items:center;gap:7px;
 }
-.player-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--c),rgba(0,212,255,.1),transparent)}
-.player-card::after{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='92'%3E%3Cpolygon points='40,2 78,22 78,70 40,90 2,70 2,22' fill='none' stroke='rgba(0,180,220,0.07)' stroke-width='1'/%3E%3C/svg%3E") center/80px 92px;pointer-events:none}
+.plabel::before{content:'//';color:rgba(0,207,255,.3);font-size:9px}
 
-.player-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--br)}
-.avatar{width:50px;height:50px;border-radius:4px;background:linear-gradient(135deg,var(--bg2),#0a2030);border:1px solid rgba(0,212,255,.2);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;box-shadow:0 0 18px rgba(0,212,255,.08),inset 0 0 18px rgba(0,212,255,.04)}
-.avatar svg{width:24px;height:24px;fill:var(--t3)}
-.cm{position:absolute;width:8px;height:8px}
-.cm.tl{top:2px;left:2px;border-top:1px solid var(--c);border-left:1px solid var(--c)}
-.cm.br{bottom:2px;right:2px;border-bottom:1px solid var(--c);border-right:1px solid var(--c)}
+/* ── TIP CARD ── */
+.tip-card{flex:1;padding:18px 22px;display:flex;flex-direction:column}
+.tip-eye{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:3px;color:var(--c);margin-bottom:6px;transition:opacity .35s}
+.tip-h{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:.3px;transition:opacity .35s}
+.tip-b{font-size:12.5px;font-weight:300;line-height:1.78;color:var(--t2);transition:opacity .35s;flex:1}
 
-.player-nick{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
-.player-role-badge{display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:2px 8px;border:1px solid rgba(0,212,255,.2);border-radius:2px;background:rgba(0,212,255,.05);font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--c)}
-.player-role-badge.new{border-color:rgba(0,255,170,.3);color:var(--green);background:rgba(0,255,170,.04)}
+/* ── SERVER STRIP ── */
+.server-strip{padding:11px 0;display:grid;grid-template-columns:repeat(4,1fr)}
+.si{display:flex;flex-direction:column;gap:4px;padding:0 15px;border-right:1px solid var(--line2)}
+.si:first-child{padding-left:18px}
+.si:last-child{border-right:none}
+.si-k{font-family:'Space Mono',monospace;font-size:7.5px;letter-spacing:3px;color:var(--t3);text-transform:uppercase}
+.si-v{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff;line-height:1.2}
+.si-v.c{color:var(--c);text-shadow:0 0 10px var(--c-glow)}
+.si-v.g{color:var(--green);text-shadow:0 0 8px rgba(0,255,170,.35)}
+.si-v.a{color:var(--amber)}
+.si-v.sm{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0;word-break:break-all}
 
-/* NEW PLAYER banner */
-.new-banner{
-  display:none;
-  padding:10px 12px;margin-bottom:12px;
-  background:linear-gradient(90deg,rgba(0,255,170,.06),rgba(0,255,170,.02));
-  border:1px solid rgba(0,255,170,.2);border-radius:3px;border-left:3px solid var(--green);
-  font-size:11.5px;font-weight:300;line-height:1.6;color:rgba(0,255,170,.8);
+/* ── PLAYER CARD ── */
+.player-card{padding:16px;display:flex;flex-direction:column}
+.hex-deco{
+  position:absolute;right:-30px;top:-30px;width:150px;height:150px;
+  pointer-events:none;opacity:.4;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='69'%3E%3Cpolygon points='30,1.5 58.5,16.5 58.5,51.5 30,67.5 1.5,51.5 1.5,16.5' fill='none' stroke='rgba(0,180,220,0.07)' stroke-width='1'/%3E%3C/svg%3E") center/60px 69px;
 }
-.new-banner.show{display:block;animation:bannerIn .6s ease both}
-@keyframes bannerIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.new-banner strong{color:var(--green);font-weight:600;display:block;margin-bottom:3px;font-family:'Syne',sans-serif;font-size:12px;letter-spacing:1px}
+.player-head{display:flex;align-items:center;gap:11px;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--line2)}
+.ava{
+  width:46px;height:46px;flex-shrink:0;border-radius:3px;
+  background:linear-gradient(135deg,#071828,#0a2030);
+  border:1px solid rgba(0,207,255,.17);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;box-shadow:inset 0 0 16px rgba(0,207,255,.04);
+}
+.ava svg{width:22px;height:22px;fill:var(--t3)}
+.tk{position:absolute;width:7px;height:7px}
+.tk.tl{top:2px;left:2px;border-top:1px solid rgba(0,207,255,.45);border-left:1px solid rgba(0,207,255,.45)}
+.tk.br{bottom:2px;right:2px;border-bottom:1px solid rgba(0,207,255,.45);border-right:1px solid rgba(0,207,255,.45)}
+.pl-nick{font-family:'Syne',sans-serif;font-size:14.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:195px;letter-spacing:.3px}
+.pl-tag{display:inline-flex;align-items:center;margin-top:4px;padding:2px 7px;border:1px solid rgba(0,207,255,.17);border-radius:2px;background:rgba(0,207,255,.04);font-family:'Space Mono',monospace;font-size:7.5px;letter-spacing:2px;color:var(--c)}
 
-.pfield{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid rgba(0,212,255,.06);gap:8px}
-.pfield:last-of-type{border-bottom:none}
-.pf-key{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:2px;color:var(--t3);flex-shrink:0;padding-top:1px}
-.pf-val{font-family:'Space Mono',monospace;font-size:10px;color:var(--t2);text-align:right;word-break:break-all;line-height:1.4}
-.pf-val.hi{color:var(--c);text-shadow:0 0 8px rgba(0,212,255,.4)}
-.pf-val.fresh{color:var(--green)}
+.pf{display:flex;justify-content:space-between;align-items:flex-start;padding:5.5px 0;border-bottom:1px solid var(--line2);gap:8px}
+.pf:last-of-type{border-bottom:none}
+.pf-k{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--t3);flex-shrink:0;padding-top:1px;text-transform:uppercase}
+.pf-v{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--t2);text-align:right;word-break:break-all;line-height:1.4}
+.pf-v.hi{color:var(--c);text-shadow:0 0 7px rgba(0,207,255,.32)}
 
-.player-summary{margin-top:12px;padding:10px 12px;background:rgba(0,0,0,.3);border-left:2px solid rgba(0,212,255,.2);border-radius:0 3px 3px 0;font-size:11px;font-weight:300;line-height:1.6;color:var(--t3);font-style:italic}
+.pl-bio{margin-top:10px;padding:9px 11px;border-left:2px solid var(--line);border-radius:0 2px 2px 0;background:rgba(0,0,0,.22);font-size:10.5px;font-weight:300;line-height:1.65;color:var(--t3);font-style:italic}
 
-/* ═══ PROGRESS ═══ */
-.progress-section{padding:14px 0 0;border-top:1px solid var(--br);animation:fadeIn 1s ease .3s both}
-.prog-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:9px}
-.prog-type{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:4px;color:rgba(0,212,255,.5);margin-bottom:3px;text-transform:uppercase}
-.prog-file{font-family:'Space Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:.3px;max-width:560px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prog-right{display:flex;align-items:baseline;gap:6px}
-.prog-size{font-family:'Space Mono',monospace;font-size:9px;color:var(--t3)}
-.prog-pct{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--c);text-shadow:0 0 20px var(--c-glow);line-height:1;letter-spacing:-1px}
-.prog-pct span{font-family:'Space Mono',monospace;font-size:12px;font-weight:400;color:var(--t3)}
+/* ── PROGRESS ── */
+.progress{
+  padding-top:11px;border-top:1px solid var(--line);
+  animation:fu .9s ease .25s both;
+}
+.prog-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px}
+.prog-type{font-family:'Space Mono',monospace;font-size:7.5px;letter-spacing:4px;color:rgba(0,207,255,.38);margin-bottom:3px;text-transform:uppercase}
+.prog-file{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--t2);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  /* file text should not bleed into gmod zone */
+  max-width:calc(100% - var(--gw) - 180px);
+}
+.prog-right{display:flex;align-items:baseline;gap:5px;flex-shrink:0}
+.prog-size{font-family:'Space Mono',monospace;font-size:8px;color:var(--t3);margin-right:2px}
+.prog-pct{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--c);text-shadow:0 0 18px var(--c-glow);line-height:1;letter-spacing:-1px}
+.prog-pct sup{font-family:'Space Mono',monospace;font-size:11px;font-weight:400;color:var(--t3);vertical-align:super}
 
-.bar-wrap{position:relative;height:4px;background:rgba(0,212,255,.07);border-radius:2px;overflow:hidden;margin-bottom:7px}
-.bar-fill{height:100%;border-radius:2px;width:0%;background:linear-gradient(90deg,rgba(0,100,150,.6),var(--c));box-shadow:0 0 8px var(--c);transition:width .2s linear}
-.bar-glow{position:absolute;top:-6px;left:0;height:16px;width:50px;background:radial-gradient(ellipse,rgba(0,212,255,.3),transparent 70%);pointer-events:none;transition:left .2s linear}
+.bar-wrap{position:relative;height:3px;background:rgba(0,207,255,.06);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.bar-fill{height:100%;border-radius:2px;width:0%;background:linear-gradient(90deg,rgba(0,80,130,.7),var(--c));box-shadow:0 0 7px var(--c);transition:width .18s linear;position:relative}
+.bar-fill::after{content:'';position:absolute;top:0;right:0;width:40px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.42));animation:sh 1.1s ease-in-out infinite}
+@keyframes sh{0%,100%{opacity:0}50%{opacity:1}}
 
-.segs{display:flex;gap:3px}
-.seg{flex:1;height:2px;border-radius:1px;background:rgba(0,212,255,.06);transition:background .3s,box-shadow .3s}
-.seg.done{background:rgba(0,212,255,.5);box-shadow:0 0 3px rgba(0,212,255,.4)}
-.seg.act{background:rgba(0,212,255,.25);animation:sa .9s ease-in-out infinite}
-@keyframes sa{0%,100%{opacity:.25}50%{opacity:.7}}
+.segs{display:flex;gap:2px}
+.seg{flex:1;height:2px;border-radius:1px;background:rgba(0,207,255,.05);transition:background .3s}
+.seg.done{background:rgba(0,207,255,.44);box-shadow:0 0 3px rgba(0,207,255,.28)}
+.seg.act{background:rgba(0,207,255,.2);animation:sa .85s ease-in-out infinite}
+@keyframes sa{0%,100%{opacity:.2}50%{opacity:.62}}
 
-/* ═══ BOTTOM BAR ═══ */
-.bottombar{display:flex;justify-content:space-between;align-items:center;padding-top:11px;border-top:1px solid var(--br);animation:fadeIn 1s ease .4s both;position:relative}
-.bottombar::before{content:'';position:absolute;top:-1px;right:0;width:80px;height:1px;background:linear-gradient(270deg,var(--c),transparent)}
-.btm-left{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3)}
-.btm-left strong{color:var(--c);font-weight:400}
-.btm-mid{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
-.btm-right{display:flex;align-items:center;gap:14px}
-.time-display{font-family:'Space Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:2px}
-.ver{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3)}
+/* ── BOTTOM BAR ──
+   The entire bottom row is split:
+   left part  → our UI
+   right part → empty reserved space for GMod panel
+
+   We do NOT put any element there.
+   We just stop our content before that zone.
+*/
+.bottombar{
+  display:flex;align-items:center;
+  /* total bottom height = our bar + GMod panel height */
+  height:var(--gh);
+  padding-bottom:0;
+  position:relative;
+}
+
+/* Thin top border only on the LEFT portion (stops before gmod zone) */
+.bottombar::before{
+  content:'';position:absolute;
+  top:0;left:0;
+  width:calc(100% - var(--gw));
+  height:1px;
+  background:linear-gradient(90deg,var(--line),rgba(0,207,255,.04));
+}
+
+/* Inner flex row — left-aligned content, vertically centered, stops before gmod zone */
+.btm-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  width:calc(100% - var(--gw));
+  padding-top:12px;
+  /* push content to vertical center of our half */
+  align-self:flex-start;
+  margin-top:auto;
+}
+
+/* Vertical separator between our area and gmod zone */
+.btm-sep{
+  position:absolute;top:0;
+  right:var(--gw);
+  width:1px;height:100%;
+  background:linear-gradient(180deg,var(--line),transparent 80%);
+}
+
+.btm-dev{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3)}
+.btm-dev strong{color:var(--c);font-weight:400}
+.btm-welcome{font-family:'Syne',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.25)}
+.btm-r{display:flex;align-items:center;gap:13px}
+.clock{font-family:'Space Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:2px}
+.build{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:2px;color:var(--t3)}
 </style>
 </head>
 <body>
 
-<div class="bg-hex"></div>
-<div class="bg-vignette"></div>
-<div class="bg-lines"></div>
-<div class="glow tl"></div>
-<div class="glow br"></div>
-<div class="glow mid"></div>
+<div class="bg-grid"></div>
+<div class="bg-scan"></div>
+<div class="bg-vign"></div>
+<div class="orb a"></div>
+<div class="orb b"></div>
+<div class="orb c"></div>
 <canvas id="cvs"></canvas>
 
 <div class="root">
@@ -240,7 +273,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
   <!-- TOP -->
   <div class="topbar">
     <div class="brand">
-      <div class="logo-wrap">
+      <div class="logo-frame">
         <img class="logo-img"
              src="https://github.com/Alvarezik/libenet_content/blob/main/site/logo.png?raw=true"
              alt="LibeNet"
@@ -248,432 +281,328 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
       </div>
       <div>
         <div class="brand-name">LibeNet</div>
-        <div class="brand-sub">Game Server &nbsp;·&nbsp; Garry's Mod</div>
+        <div class="brand-sub">Garry's Mod &nbsp;·&nbsp; Game Server</div>
       </div>
     </div>
-    <div class="topright">
-      <div class="server-ping">
-        <div class="ping-dot"></div>
-        <span id="srv-ping">— ms</span>
-      </div>
-      <div class="dev-badge">
-        <div class="dev-dot"></div>
-        <div class="dev-badge-text">В разработке</div>
-      </div>
+    <div class="top-right">
+      <div class="ping-chip"><div class="ping-dot"></div><span id="el-ping">— ms</span></div>
+      <div class="dev-pill"><div class="dev-dot"></div><div class="dev-label">В разработке</div></div>
     </div>
   </div>
 
   <!-- CONTENT -->
   <div class="content">
+
     <div class="left-col">
-
       <!-- Tips -->
-      <div class="tip-card">
-        <div class="sec-label">Совет</div>
-        <div class="tip-eyebrow" id="tip-eye">ДОБРО ПОЖАЛОВАТЬ</div>
-        <div class="tip-heading" id="tip-head">LibeNet</div>
-        <div class="tip-body" id="tip-body">Загрузка...</div>
+      <div class="pane tip-card">
+        <div class="plabel">Совет</div>
+        <div class="tip-eye" id="tip-eye">&nbsp;</div>
+        <div class="tip-h"   id="tip-h">&nbsp;</div>
+        <div class="tip-b"   id="tip-b">&nbsp;</div>
       </div>
-
-      <!-- Server info -->
-      <div class="server-strip">
-        <div class="sinfo">
-          <div class="sinfo-key">Режим</div>
-          <div class="sinfo-val a" id="srv-mode">—</div>
-        </div>
-        <div class="sinfo">
-          <div class="sinfo-key">Карта</div>
-          <div class="sinfo-val sm" id="srv-map">—</div>
-        </div>
-        <div class="sinfo">
-          <div class="sinfo-key">Игроки</div>
-          <div class="sinfo-val c" id="srv-players">—</div>
-        </div>
-        <div class="sinfo">
-          <div class="sinfo-key">Статус</div>
-          <div class="sinfo-val g">● ONLINE</div>
-        </div>
+      <!-- Server strip -->
+      <div class="pane server-strip">
+        <div class="si"><div class="si-k">Режим</div><div class="si-v a"  id="el-mode">—</div></div>
+        <div class="si"><div class="si-k">Карта</div><div class="si-v sm" id="el-map">—</div></div>
+        <div class="si"><div class="si-k">Игроки</div><div class="si-v c" id="el-players">—</div></div>
+        <div class="si"><div class="si-k">Статус</div><div class="si-v g">● ONLINE</div></div>
       </div>
-
     </div>
 
     <!-- PLAYER -->
-    <div class="player-card">
-      <div class="sec-label">Игрок</div>
-
+    <div class="pane player-card">
+      <div class="hex-deco"></div>
+      <div class="plabel">Игрок</div>
       <div class="player-head">
-        <div class="avatar">
+        <div class="ava">
           <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-          <div class="cm tl"></div>
-          <div class="cm br"></div>
+          <div class="tk tl"></div><div class="tk br"></div>
         </div>
         <div style="flex:1;min-width:0">
-          <div class="player-nick" id="pl-nick">—</div>
-          <div class="player-role-badge" id="pl-role">ГРАЖДАНИН</div>
+          <div class="pl-nick" id="el-nick">—</div>
+          <div class="pl-tag"  id="el-tag">ГРАЖДАНИН</div>
         </div>
       </div>
-
-      <!-- New player banner -->
-      <div class="new-banner" id="new-banner">
-        <strong>🎮 Первый раз на сервере!</strong>
-        Добро пожаловать на LibeNet! Здесь тебя ждут крутая экономика, интересные профессии и дружное сообщество. Нажми F4 чтобы выбрать работу и начать своё приключение!
-      </div>
-
-      <div class="pfield">
-        <div class="pf-key">Steam ID</div>
-        <div class="pf-val hi" id="pl-sid">—</div>
-      </div>
-      <div class="pfield">
-        <div class="pf-key">Последний вход</div>
-        <div class="pf-val" id="pl-last">—</div>
-      </div>
-      <div class="pfield">
-        <div class="pf-key">Всего заходов</div>
-        <div class="pf-val" id="pl-visits">—</div>
-      </div>
-      <div class="pfield">
-        <div class="pf-key">Наработано</div>
-        <div class="pf-val" id="pl-playtime">—</div>
-      </div>
-
-      <div class="player-summary" id="pl-summary">Загрузка данных...</div>
+      <div class="pf"><div class="pf-k">Steam ID</div><div class="pf-v hi" id="el-sid">—</div></div>
+      <div class="pf"><div class="pf-k">Последний вход</div><div class="pf-v" id="el-last">—</div></div>
+      <div class="pf"><div class="pf-k">Заходов</div><div class="pf-v" id="el-visits">—</div></div>
+      <div class="pf"><div class="pf-k">Наработано</div><div class="pf-v" id="el-time">—</div></div>
+      <div class="pl-bio" id="el-bio"></div>
     </div>
+
   </div>
 
   <!-- PROGRESS -->
-  <div class="progress-section">
-    <div class="prog-top">
+  <div class="progress">
+    <div class="prog-row">
       <div>
-        <div class="prog-type" id="load-type">ИНИЦИАЛИЗАЦИЯ</div>
-        <div class="prog-file" id="load-file">Подготовка движка...</div>
+        <div class="prog-type" id="el-ptype">ИНИЦИАЛИЗАЦИЯ</div>
+        <div class="prog-file" id="el-pfile">Подготовка движка...</div>
       </div>
       <div class="prog-right">
-        <div class="prog-size" id="load-size"></div>
-        <div class="prog-pct"><span id="pct">0</span><span>%</span></div>
+        <div class="prog-size" id="el-psize"></div>
+        <div class="prog-pct"><span id="el-pct">0</span><sup>%</sup></div>
       </div>
     </div>
-    <div class="bar-wrap">
-      <div class="bar-fill" id="bar-fill"></div>
-      <div class="bar-glow" id="bar-glow"></div>
-    </div>
-    <div class="segs" id="segs"></div>
+    <div class="bar-wrap"><div class="bar-fill" id="el-bar"></div></div>
+    <div class="segs" id="el-segs"></div>
   </div>
 
-  <!-- BOTTOM -->
+  <!-- BOTTOM — right side intentionally empty for GMod panel -->
   <div class="bottombar">
-    <div class="btm-left">DEV &nbsp;//&nbsp; <strong>alvarez</strong></div>
-    <div class="btm-mid">Приятной игры</div>
-    <div class="btm-right">
-      <div class="time-display" id="clock">—</div>
-      <div class="ver">BUILD α0.3</div>
+    <div class="btm-sep"></div>
+    <div class="btm-inner">
+      <div class="btm-dev">DEV &nbsp;//&nbsp; <strong>alvarez</strong></div>
+      <div class="btm-welcome">Приятной игры</div>
+      <div class="btm-r">
+        <div class="clock" id="el-clock">00:00:00</div>
+        <div class="build">α 0.3</div>
+      </div>
     </div>
   </div>
 
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   СИСТЕМА ДАННЫХ ИГРОКА
-   Приоритет:
-   1. URL-параметр (GMod передаёт через sv_loadingurl)
-   2. window.gmod_* (SetHTMLVariable)
-   3. localStorage (данные с прошлого визита)
-   4. Дефолт
-═══════════════════════════════════════════════════════ */
-
-const LS_KEY = 'lbn_player';
-const NOW = new Date();
-
-function getParam(name, fallback = '') {
-  if (typeof window[name] !== 'undefined' && window[name]) return String(window[name]);
-  const u = new URLSearchParams(location.search);
-  if (u.has(name)) return u.get(name);
-  return fallback;
+/* ── UTILS ── */
+function getVar(n, d) {
+  if (typeof window[n] !== 'undefined' && window[n] !== '') return String(window[n]);
+  try { const v = new URLSearchParams(location.search).get(n); if (v !== null && v !== '') return v; } catch(e){}
+  return d;
+}
+function fmtDate(iso) {
+  try {
+    const d = new Date(iso);
+    if (isNaN(d)) return '—';
+    return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'})
+      + ' ' + d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  } catch(e){return '—';}
+}
+function fmtAgo(iso) {
+  try {
+    const diff = Math.round((Date.now() - new Date(iso)) / 60000);
+    if (diff < 1)    return 'только что';
+    if (diff < 60)   return diff + ' мин назад';
+    if (diff < 1440) return Math.round(diff/60) + ' ч назад';
+    return Math.round(diff/1440) + ' дн назад';
+  } catch(e){return '—';}
+}
+function fmtPT(min) {
+  min = parseInt(min)||0;
+  if (min < 1)  return '< 1 мин';
+  if (min < 60) return min + ' мин';
+  const h=Math.floor(min/60), m=min%60;
+  return h+' ч'+(m?' '+m+' мин':'');
 }
 
-function fmtDate(d) {
-  return d.toLocaleDateString('ru-RU', {day:'2-digit',month:'2-digit',year:'numeric'})
-    + ' ' + d.toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
-}
-
-function fmtPlaytime(minutes) {
-  if (!minutes || minutes < 1) return '< 1 мин';
-  if (minutes < 60) return minutes + ' мин';
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return h + ' ч ' + (m > 0 ? m + ' мин' : '');
-}
-
-/* ── Загрузка сохранённых данных ── */
+/* ── PLAYER DATA ── */
+const LS = 'lbn_v3';
 let saved = null;
-try { saved = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e) {}
+try { saved = JSON.parse(localStorage.getItem(LS)); } catch(e){}
 
-/* ── Получаем данные с сервера (URL или window) ── */
-const fromServer = {
-  nick:     getParam('gmod_nick'),
-  steamid:  getParam('gmod_steamid'),
-  gamemode: getParam('gmod_gamemode'),
-  map:      getParam('gmod_map'),
-  players:  getParam('gmod_players'),
-  ping:     getParam('gmod_ping'),
-  playtime: getParam('gmod_playtime'), // минуты, число
+const S = {
+  nick:     getVar('gmod_nick',     ''),
+  steamid:  getVar('gmod_steamid',  ''),
+  gamemode: getVar('gmod_gamemode', 'DarkRP'),
+  map:      getVar('gmod_map',      'gm_construct'),
+  players:  getVar('gmod_players',  ''),
+  ping:     getVar('gmod_ping',     ''),
+  playtime: getVar('gmod_playtime', ''),
 };
 
-/* ── Определяем, кто заходит ── */
-// Если Steam ID совпадает с сохранённым — это возвращение того же игрока
-const isSamePlayer = saved && saved.steamid && fromServer.steamid
-  && saved.steamid === fromServer.steamid;
+const samePlayer = saved && saved.steamid && S.steamid && saved.steamid === S.steamid;
+const isNew      = !samePlayer;
 
-const isNewPlayer = !isSamePlayer;
+const nick    = S.nick    || (saved&&saved.nick)    || 'Игрок';
+const steamid = S.steamid || (saved&&saved.steamid) || '';
+const visits  = samePlayer ? (parseInt(saved.visits||0)+1) : 1;
+const playmin = S.playtime ? parseInt(S.playtime) : (samePlayer&&saved.playtime ? parseInt(saved.playtime) : 0);
+const lastISO = samePlayer && saved.lastJoin ? saved.lastJoin : null;
 
-/* ── Формируем итоговый объект игрока ── */
-const nick    = fromServer.nick     || (saved && saved.nick)    || 'Игрок';
-const steamid = fromServer.steamid  || (saved && saved.steamid) || '—';
+try {
+  localStorage.setItem(LS, JSON.stringify({
+    nick, steamid, visits,
+    playtime: playmin,
+    lastJoin: new Date().toISOString(),
+  }));
+} catch(e){}
 
-const visits  = isSamePlayer
-  ? (parseInt(saved.visits || 0) + 1)
-  : 1;
+/* ── Fill player UI ── */
+document.getElementById('el-nick').textContent = nick;
+document.getElementById('el-sid').textContent  = steamid || '—';
+document.getElementById('el-tag').textContent  = 'ГРАЖДАНИН';
 
-const playtimeMinutes = fromServer.playtime
-  ? parseInt(fromServer.playtime)
-  : (isSamePlayer && saved.playtime ? parseInt(saved.playtime) : 0);
+document.getElementById('el-last').textContent   = lastISO ? fmtDate(lastISO) : (isNew ? 'Первый заход' : '—');
+document.getElementById('el-visits').textContent = visits + ' раз(а)';
+document.getElementById('el-time').textContent   = fmtPT(playmin);
 
-const lastJoin = isSamePlayer && saved.lastJoin
-  ? fmtDate(new Date(saved.lastJoin))
-  : (isNewPlayer ? 'Первый заход!' : '—');
-
-/* ── Сохраняем обновлённые данные ── */
-const toSave = {
-  nick:      nick,
-  steamid:   steamid,
-  visits:    visits,
-  playtime:  playtimeMinutes,
-  lastJoin:  NOW.toISOString(),
-};
-try { localStorage.setItem(LS_KEY, JSON.stringify(toSave)); } catch(e) {}
-
-/* ── Заполняем DOM ── */
-
-// Никнейм и Steam ID
-document.getElementById('pl-nick').textContent = nick;
-document.getElementById('pl-sid').textContent  = steamid || '—';
-
-// Роль
-const roleEl = document.getElementById('pl-role');
-roleEl.textContent = isNewPlayer ? 'НОВЫЙ ИГРОК' : 'ГРАЖДАНИН';
-if (isNewPlayer) roleEl.classList.add('new');
-
-// Баннер нового игрока
-if (isNewPlayer) {
-  document.getElementById('new-banner').classList.add('show');
-}
-
-// Последний заход
-const lastEl = document.getElementById('pl-last');
-lastEl.textContent = lastJoin;
-if (isNewPlayer) lastEl.classList.add('fresh');
-
-// Заходы
-document.getElementById('pl-visits').textContent = visits + ' раз(а)';
-
-// Наработка
-document.getElementById('pl-playtime').textContent = fmtPlaytime(playtimeMinutes);
-
-// Краткая сводка
-const summaryEl = document.getElementById('pl-summary');
-if (isNewPlayer) {
-  summaryEl.textContent = 'Ты впервые на LibeNet — нажми F4 чтобы выбрать профессию. Удачи!';
+const bioEl = document.getElementById('el-bio');
+if (isNew) {
+  bioEl.textContent = 'Добро пожаловать на LibeNet! Нажми F4, выбери профессию и начни своё приключение.';
 } else {
-  const ago = Math.round((NOW - new Date(saved.lastJoin)) / 60000);
-  let agoStr;
-  if      (ago < 2)    agoStr = 'только что';
-  else if (ago < 60)   agoStr = ago + ' мин назад';
-  else if (ago < 1440) agoStr = Math.round(ago/60) + ' ч назад';
-  else                 agoStr = Math.round(ago/1440) + ' д назад';
-  summaryEl.textContent = 'Снова привет, ' + nick + '! Последний визит: ' + agoStr + '. Заходов: ' + visits + '.';
+  bioEl.textContent = 'Снова привет, ' + nick + '! Был ' + fmtAgo(lastISO) + '. Заходов: ' + visits + '.';
 }
 
-/* Серверные данные */
-const gamemode = fromServer.gamemode || (saved && saved.gamemode) || 'DarkRP';
-const map      = fromServer.map      || (saved && saved.map)      || 'gm_construct';
-const players  = fromServer.players  || '—';
-const ping     = fromServer.ping;
+/* ── Server info ── */
+const gm  = S.gamemode;
+const map = S.map;
+document.getElementById('el-mode').textContent    = gm;
+document.getElementById('el-map').textContent     = map;
+document.getElementById('el-players').textContent = S.players || '—';
+if (S.ping) document.getElementById('el-ping').textContent = S.ping + ' ms';
 
-document.getElementById('srv-mode').textContent    = gamemode;
-document.getElementById('srv-map').textContent     = map;
-document.getElementById('srv-players').textContent = players;
-if (ping) document.getElementById('srv-ping').textContent = ping + ' ms';
-
-/* ═══════════════════════════════════════════════════════
-   СОВЕТЫ — зависят от того, новый игрок или нет
-═══════════════════════════════════════════════════════ */
-const TIPS_NEW = [
-  { e:'ПЕРВЫЙ РАЗ?', h:'Добро пожаловать!', b:'LibeNet — твой новый дом. Здесь тебя ждут экономика, криминал, закон и масса возможностей. Начни с нажатия F4!' },
-  { e:'С ЧЕГО НАЧАТЬ', h:'Выбери профессию', b:'Открой меню F4 и выбери работу. Начни с простого — торговца или фермера. Деньги открывают новые пути!' },
-  { e:'СОВЕТ НОВИЧКУ', h:'Читай чат', b:'В чате сервера ты найдёшь помощь от других игроков. Не бойся спрашивать — сообщество LibeNet дружелюбное.' },
-  { e:'ПРАВИЛА', h:'FearRP', b:'Твой персонаж дорожит жизнью — веди себя реалистично. RDM (убийство без причины) запрещён и наказывается баном.' },
-  { e:'КОМАНДА', h:'alvarez', b:'LibeNet создаётся с любовью к каждой детали. Нашли баг — пишите !report. Ваш отзыв делает сервер лучше!' },
+/* ── TIPS ── */
+const TIPS = isNew ? [
+  {e:'ПЕРВЫЙ РАЗ',    h:'Добро пожаловать!',   b:'Нажми F4 и выбери профессию. Здесь есть работа, бизнес, криминал и закон — только ты решаешь свой путь.'},
+  {e:'С ЧЕГО НАЧАТЬ', h:'Выбери профессию',    b:'Меню F4 откроет список ролей. Начни с торговца или рабочего — первые деньги придут быстро.'},
+  {e:'ПРАВИЛА',       h:'FearRP',              b:'Персонаж дорожит жизнью. RDM и пропкилл запрещены. Уважай других — и тебя уважат.'},
+  {e:'КОМАНДА',       h:'alvarez',             b:'LibeNet в активной разработке. Нашёл баг — пиши !report. Твой отзыв делает сервер лучше!'},
+] : [
+  {e:'С ВОЗВРАЩЕНИЕМ',h:'Снова в деле!',       b:'Рады видеть тебя снова. Пока тебя не было, мы не стояли на месте — проверь что нового!'},
+  {e:gm,              h:'Твой город',           b:'Возвращайся к своей роли и деньгам. F4 — список профессий. Время снова в бой!'},
+  {e:'ЭКОНОМИКА',     h:'Копи валюту',          b:'Принтеры приносят пассивный доход — купи и охраняй. Полиция не дремлет.'},
+  {e:'ОБНОВЛЕНИЯ',    h:'Что нового?',          b:'Сервер постоянно растёт. Новые фичи и баланс — следи за анонсами от alvarez!'},
 ];
 
-const TIPS_RETURN = [
-  { e:'С ВОЗВРАЩЕНИЕМ', h:'Снова в деле!', b:'Рады снова видеть тебя на LibeNet. Пока тебя не было, мы не стояли на месте — проверь обновления!' },
-  { e:gamemode.toUpperCase(), h:'Твой город', b:'Возвращайся к своей работе, бизнесу и деньгам. Экономика сервера ждёт тебя. Нажми F4 чтобы вернуться в роль.' },
-  { e:'ОБНОВЛЕНИЯ', h:'Что нового?', b:'Сервер постоянно развивается. Разработчик alvarez работает над новыми фичами — следи за анонсами в дискорде!' },
-  { e:'СОВЕТ', h:'Копи валюту', b:'Не трать всё сразу — вложи в принтер или бизнес. Пассивный доход на LibeNet реально работает.' },
-  { e:'КОМАНДА', h:'alvarez', b:'LibeNet строится вокруг обратной связи игроков. Ты — часть этого проекта с самого начала.' },
-];
-
-const TIPS = isNewPlayer ? TIPS_NEW : TIPS_RETURN;
 let tIdx = 0;
+const eyeEl = document.getElementById('tip-eye');
+const tipH  = document.getElementById('tip-h');
+const tipB  = document.getElementById('tip-b');
 
-const eyeEl  = document.getElementById('tip-eye');
-const headEl = document.getElementById('tip-head');
-const bodyEl = document.getElementById('tip-body');
-
-function showTip(i) {
-  [eyeEl, headEl, bodyEl].forEach(el => el.style.opacity = '0');
-  setTimeout(() => {
-    eyeEl.textContent  = TIPS[i].e;
-    headEl.textContent = TIPS[i].h;
-    bodyEl.textContent = TIPS[i].b;
-    [eyeEl, headEl, bodyEl].forEach(el => { el.style.transition = 'opacity .5s'; el.style.opacity = '1'; });
-  }, 380);
+function showTip(i, instant) {
+  if (instant) {
+    eyeEl.style.transition = tipH.style.transition = tipB.style.transition = 'none';
+    eyeEl.style.opacity = tipH.style.opacity = tipB.style.opacity = '1';
+    eyeEl.textContent = TIPS[i].e;
+    tipH.textContent  = TIPS[i].h;
+    tipB.textContent  = TIPS[i].b;
+    return;
+  }
+  [eyeEl, tipH, tipB].forEach(el=>{ el.style.transition='none'; el.style.opacity='0'; });
+  setTimeout(()=>{
+    eyeEl.textContent = TIPS[i].e;
+    tipH.textContent  = TIPS[i].h;
+    tipB.textContent  = TIPS[i].b;
+    [eyeEl, tipH, tipB].forEach(el=>{ el.style.transition='opacity .45s'; el.style.opacity='1'; });
+  }, 340);
 }
-showTip(0);
-setInterval(() => { tIdx = (tIdx + 1) % TIPS.length; showTip(tIdx); }, 5500);
+showTip(0, true);
+setInterval(()=>{ tIdx=(tIdx+1)%TIPS.length; showTip(tIdx); }, 5500);
 
-/* ═══════════════════════════════════════════════════════
-   ЗАГРУЗОЧНЫЕ СТАДИИ
-═══════════════════════════════════════════════════════ */
+/* ── LOADING STAGES ── */
+const gmL = gm.toLowerCase();
 const STAGES = [
-  ['ДВИЖОК',        'engine/garrysmod.dll',                               0,     320],
-  ['ДВИЖОК',        'engine/shaderapidx9.dll',                            0,     250],
-  ['ДВИЖОК',        'engine/vphysics.dll',                                0,     180],
-  ['МАТЕРИАЛЫ',     'materials/libenet/hud/hud_base.vtf',                 1.2,   480],
-  ['МАТЕРИАЛЫ',     'materials/libenet/hud/icons_sprite.vtf',             0.8,   360],
-  ['МАТЕРИАЛЫ',     'materials/' + gamemode.toLowerCase() + '/city01.vtf',2.4,   600],
-  ['МАТЕРИАЛЫ',     'materials/' + gamemode.toLowerCase() + '/city02.vtf',3.1,   680],
-  ['МАТЕРИАЛЫ',     'materials/effects/flashlight001.vtf',                1.1,   360],
-  ['МОДЕЛИ',        'models/player/urban.mdl',                            5.2,   660],
-  ['МОДЕЛИ',        'models/props_c17/furniture_chair01a.mdl',            3.6,   530],
-  ['МОДЕЛИ',        'models/weapons/c_pistol.mdl',                        4.1,   510],
-  ['МОДЕЛИ',        'models/props_c17/tv_monitor01.mdl',                  2.9,   460],
-  ['ЗВУКИ',         'sound/libenet/ui/notify.wav',                        0.2,   160],
-  ['ЗВУКИ',         'sound/ambient/city/city_amb01.wav',                  4.3,   510],
-  ['СКРИПТЫ',       'lua/autorun/' + gamemode.toLowerCase() + '_config.lua', 0.1, 230],
-  ['СКРИПТЫ',       'lua/libenet/core/sh_init.lua',                       0.2,   280],
-  ['СКРИПТЫ',       'lua/libenet/modules/sh_economy.lua',                 0.2,   250],
-  ['СКРИПТЫ',       'lua/libenet/modules/sh_jobs.lua',                    0.2,   240],
-  ['СКРИПТЫ',       'lua/libenet/hud/cl_hud_main.lua',                    0.2,   220],
-  ['КАРТА',         'maps/' + map + '.bsp',                               48.0,  1300],
-  ['КАРТА',         'maps/' + map + '.nav',                               2.3,   350],
-  ['СИНХРОНИЗАЦИЯ', 'sv_download: libenet/content/v0.3',                  0,     620],
-  ['СИНХРОНИЗАЦИЯ', 'workshop: libenet_base_content',                     0,     460],
-  ['ГОТОВО',        'LibeNet готов — добро пожаловать!',                  0,     380],
+  ['ДВИЖОК',        'engine/garrysmod.dll',                          0,    300],
+  ['ДВИЖОК',        'engine/shaderapidx9.dll',                       0,    240],
+  ['ДВИЖОК',        'engine/vphysics.dll',                           0,    170],
+  ['МАТЕРИАЛЫ',     'materials/libenet/hud/hud_base.vtf',            1.2,  450],
+  ['МАТЕРИАЛЫ',     'materials/libenet/hud/icons_sprite.vtf',        0.8,  340],
+  ['МАТЕРИАЛЫ',     'materials/'+gmL+'/props_city01.vtf',            2.4,  580],
+  ['МАТЕРИАЛЫ',     'materials/'+gmL+'/props_city02.vtf',            3.1,  640],
+  ['МАТЕРИАЛЫ',     'materials/effects/flashlight001.vtf',           1.1,  330],
+  ['МОДЕЛИ',        'models/player/urban.mdl',                       5.2,  630],
+  ['МОДЕЛИ',        'models/props_c17/furniture_chair01a.mdl',       3.6,  500],
+  ['МОДЕЛИ',        'models/weapons/c_pistol.mdl',                   4.1,  480],
+  ['МОДЕЛИ',        'models/props_c17/tv_monitor01.mdl',             2.9,  420],
+  ['ЗВУКИ',         'sound/libenet/ui/notify.wav',                   0.2,  150],
+  ['ЗВУКИ',         'sound/ambient/city/city_amb01.wav',             4.3,  480],
+  ['СКРИПТЫ',       'lua/autorun/'+gmL+'_config.lua',                0.1,  215],
+  ['СКРИПТЫ',       'lua/libenet/core/sh_init.lua',                  0.2,  255],
+  ['СКРИПТЫ',       'lua/libenet/modules/sh_economy.lua',            0.2,  235],
+  ['СКРИПТЫ',       'lua/libenet/modules/sh_jobs.lua',               0.2,  225],
+  ['СКРИПТЫ',       'lua/libenet/hud/cl_hud_main.lua',               0.1,  205],
+  ['КАРТА',         'maps/'+map+'.bsp',                             48.0, 1230],
+  ['КАРТА',         'maps/'+map+'.nav',                              2.3,  330],
+  ['СИНХРОНИЗАЦИЯ', 'sv_download: libenet/content/v0.3',             0,    590],
+  ['СИНХРОНИЗАЦИЯ', 'workshop: libenet_base_content',                0,    430],
+  ['ГОТОВО',        isNew
+    ? 'Добро пожаловать на LibeNet! Нажми F4 для выбора профессии.'
+    : 'С возвращением, '+nick+'! LibeNet загружен.',                 0,    370],
 ];
 
-const TOTAL_MS = STAGES.reduce((s, x) => s + x[3], 0);
-const SEG_N = 18;
+const TOTAL_MS = STAGES.reduce((s,x)=>s+x[3],0);
+const SEG_N = 20;
 
-const segWrap = document.getElementById('segs');
-for (let i = 0; i < SEG_N; i++) {
-  const d = document.createElement('div'); d.className = 'seg'; d.id = 'sg' + i;
-  segWrap.appendChild(d);
+const sw = document.getElementById('el-segs');
+for (let i=0;i<SEG_N;i++){
+  const d=document.createElement('div');d.className='seg';d.id='sg'+i;sw.appendChild(d);
 }
 
-const typeEl2 = document.getElementById('load-type');
-const fileEl2 = document.getElementById('load-file');
-const sizeEl  = document.getElementById('load-size');
-const pctEl   = document.getElementById('pct');
-const barEl   = document.getElementById('bar-fill');
-const glowEl  = document.getElementById('bar-glow');
+const ptEl=document.getElementById('el-ptype');
+const pfEl=document.getElementById('el-pfile');
+const psEl=document.getElementById('el-psize');
+const pctEl=document.getElementById('el-pct');
+const barEl=document.getElementById('el-bar');
 
-function fmtMB(mb) { return mb >= 1 ? mb.toFixed(1) + ' MB' : (mb * 1024).toFixed(0) + ' KB'; }
-function setSegs(pct) {
-  const done = Math.floor(pct / 100 * SEG_N);
-  for (let i = 0; i < SEG_N; i++) {
-    document.getElementById('sg' + i).className =
-      'seg' + (i < done ? ' done' : i === done ? ' act' : '');
+function setSegs(p){
+  const done=Math.floor(p/100*SEG_N);
+  for(let i=0;i<SEG_N;i++){
+    document.getElementById('sg'+i).className='seg'+(i<done?' done':i===done?' act':'');
   }
 }
+function fmtMB(mb){return mb>=1?mb.toFixed(1)+' MB':(mb*1024).toFixed(0)+' KB';}
 
-let elapsed = 0, sIdx = 0, sElapsed = 0, lastTs = null;
-function tick(ts) {
-  if (!lastTs) lastTs = ts;
-  const dt = Math.min(ts - lastTs, 80); lastTs = ts;
-  elapsed += dt; sElapsed += dt;
-
-  while (sIdx < STAGES.length - 1 && sElapsed >= STAGES[sIdx][3]) {
-    sElapsed -= STAGES[sIdx][3]; sIdx++;
-  }
-  const st = STAGES[sIdx];
-  const sp = Math.min(sElapsed / st[3], 1);
-  let doneMs = 0;
-  for (let i = 0; i < sIdx; i++) doneMs += STAGES[i][3];
-  const rawPct = Math.min((doneMs + sElapsed) / TOTAL_MS * 100, 99.8);
-
-  pctEl.textContent  = Math.round(rawPct);
-  barEl.style.width  = rawPct + '%';
-  glowEl.style.left  = Math.max(rawPct - 3, 0) + '%';
-  setSegs(rawPct);
-  typeEl2.textContent = st[0];
-  fileEl2.textContent = st[1];
-  sizeEl.textContent  = st[2] ? (st[2] * sp).toFixed(1) + ' / ' + fmtMB(st[2]) : '';
-
-  if (elapsed < TOTAL_MS + 200) requestAnimationFrame(tick);
-  else {
-    pctEl.textContent = '100'; barEl.style.width = '100%';
-    glowEl.style.display = 'none'; setSegs(100);
-    typeEl2.textContent = 'ГОТОВО';
-    fileEl2.textContent = isNewPlayer
-      ? 'Добро пожаловать на LibeNet! Первый шаг в новый мир.'
-      : 'LibeNet загружен — рады видеть тебя снова, ' + nick + '!';
-    sizeEl.textContent = '';
+let elapsed=0,sIdx=0,sEl=0,lastTs=null;
+function tick(ts){
+  if(!lastTs)lastTs=ts;
+  const dt=Math.min(ts-lastTs,80);lastTs=ts;
+  elapsed+=dt;sEl+=dt;
+  while(sIdx<STAGES.length-1&&sEl>=STAGES[sIdx][3]){sEl-=STAGES[sIdx][3];sIdx++;}
+  const st=STAGES[sIdx];
+  const sp=Math.min(sEl/st[3],1);
+  let doneMs=0;for(let i=0;i<sIdx;i++)doneMs+=STAGES[i][3];
+  const raw=Math.min((doneMs+sEl)/TOTAL_MS*100,99.9);
+  pctEl.textContent=Math.round(raw);
+  barEl.style.width=raw+'%';
+  setSegs(raw);
+  ptEl.textContent=st[0];
+  pfEl.textContent=st[1];
+  psEl.textContent=st[2]?(st[2]*sp).toFixed(1)+' / '+fmtMB(st[2]):'';
+  if(elapsed<TOTAL_MS+200)requestAnimationFrame(tick);
+  else{
+    pctEl.textContent='100';barEl.style.width='100%';setSegs(100);
+    ptEl.textContent='ГОТОВО';pfEl.textContent=STAGES[STAGES.length-1][1];psEl.textContent='';
   }
 }
 requestAnimationFrame(tick);
 
-/* ═══ CLOCK ═══ */
-function clock() {
-  const d = new Date();
-  document.getElementById('clock').textContent =
-    String(d.getHours()).padStart(2,'0') + ':' +
-    String(d.getMinutes()).padStart(2,'0') + ':' +
-    String(d.getSeconds()).padStart(2,'0');
+/* ── CLOCK ── */
+const ckEl=document.getElementById('el-clock');
+function ck(){
+  const d=new Date();
+  ckEl.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
 }
-clock(); setInterval(clock, 1000);
+ck();setInterval(ck,1000);
 
-/* ═══ PARTICLES ═══ */
-const cvs = document.getElementById('cvs');
-const ctx = cvs.getContext('2d');
-cvs.width = innerWidth; cvs.height = innerHeight;
-window.addEventListener('resize', () => { cvs.width = innerWidth; cvs.height = innerHeight; });
-
-const DOTS = Array.from({length:50}, () => ({
-  x: Math.random()*cvs.width, y: Math.random()*cvs.height,
-  r: Math.random()*1.3+.2,
-  vx:(Math.random()-.5)*.2, vy:(Math.random()-.5)*.2,
-  a: Math.random()*.35+.06,
+/* ── PARTICLES ── */
+const cvs=document.getElementById('cvs');
+const ctx=cvs.getContext('2d');
+function rsz(){cvs.width=innerWidth;cvs.height=innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+const DOTS=Array.from({length:45},()=>({
+  x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+  r:Math.random()*1.2+.2,
+  vx:(Math.random()-.5)*.17,vy:(Math.random()-.5)*.17,
+  a:Math.random()*.28+.05,
 }));
-
-(function frame() {
+(function frame(){
   ctx.clearRect(0,0,cvs.width,cvs.height);
-  DOTS.forEach(d => {
-    d.x = (d.x+d.vx+cvs.width)%cvs.width;
-    d.y = (d.y+d.vy+cvs.height)%cvs.height;
-    ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(0,200,240,${d.a})`; ctx.fill();
+  DOTS.forEach(d=>{
+    d.x=(d.x+d.vx+cvs.width)%cvs.width;
+    d.y=(d.y+d.vy+cvs.height)%cvs.height;
+    ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(0,188,225,${d.a})`;ctx.fill();
   });
-  for (let i=0;i<DOTS.length;i++)
-    for (let j=i+1;j<DOTS.length;j++) {
-      const dx=DOTS[i].x-DOTS[j].x, dy=DOTS[i].y-DOTS[j].y;
+  for(let i=0;i<DOTS.length;i++)
+    for(let j=i+1;j<DOTS.length;j++){
+      const dx=DOTS[i].x-DOTS[j].x,dy=DOTS[i].y-DOTS[j].y;
       const dist=Math.hypot(dx,dy);
-      if (dist<85) {
+      if(dist<78){
         ctx.beginPath();
-        ctx.strokeStyle=`rgba(0,200,240,${.06*(1-dist/85)})`;
-        ctx.lineWidth=.4;
-        ctx.moveTo(DOTS[i].x,DOTS[i].y);
-        ctx.lineTo(DOTS[j].x,DOTS[j].y);
+        ctx.strokeStyle=`rgba(0,188,225,${.05*(1-dist/78)})`;
+        ctx.lineWidth=.32;
+        ctx.moveTo(DOTS[i].x,DOTS[i].y);ctx.lineTo(DOTS[j].x,DOTS[j].y);
         ctx.stroke();
       }
     }
